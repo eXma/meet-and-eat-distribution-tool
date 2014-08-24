@@ -1,0 +1,7 @@
+build/
+run/
+*.+
+*.pyc
+*.pyo
+*.swp
+*.swo
