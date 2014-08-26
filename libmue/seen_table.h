@@ -32,13 +32,15 @@ class Seen_table : boost::noncopyable
 		std::vector<Seen_data *> _table;
 		std::list<Seen_data *> _allocated_lines;
 
-		Seen_table(Seen_table const &old);
+		Seen_table(Seen_table const &old, int new_generation);
+
+
 
 		void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b);
 
 	public:
 
-		Seen_table clone() { return Seen_table(*this); }
+		Seen_table clone() { return Seen_table(*this, _generation + 1); }
 
 		bool seen(Team_id id_1, Team_id id_2, Team_id id_3) const
 		{

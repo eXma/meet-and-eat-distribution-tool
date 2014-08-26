@@ -17,9 +17,9 @@ void mue::Seen_table::add_meeting(Team_id id_1, Team_id id_2, Team_id id_3)
 }
 
 
-mue::Seen_table::Seen_table(Seen_table const &old)
+mue::Seen_table::Seen_table(Seen_table const &old, int new_generation)
 :
-	_generation(old._generation + 1),
+	_generation(new_generation),
 	_max_teams(old._max_teams),
 	_table(old._table)
 {}
