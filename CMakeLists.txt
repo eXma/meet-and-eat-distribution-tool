@@ -1,6 +1,8 @@
 project(mue)
 cmake_minimum_required(VERSION 2.8)
 
+enable_testing()
+
 # find python
 set(CMAKE_PYTHON_VERSIONS 2.6)
 find_package(PythonLibs REQUIRED)
