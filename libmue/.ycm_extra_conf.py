@@ -58,6 +58,7 @@ flags = [
 '-x',
 'c++',
 '-lboost',
+'-I%s' % os.path.dirname(os.path.abspath(__file__))
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
