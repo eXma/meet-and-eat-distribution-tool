@@ -39,7 +39,8 @@ class TestSeenTable : public CxxTest::TestSuite
 
 			TS_ASSERT(st.seen(0, 1, 2));
 			TS_ASSERT(st.seen(0, 1, 3));
-			TS_ASSERT(!st.seen(3, 3, 4));
+			TS_ASSERT(!st.seen(3, 4, 5));
+			TS_ASSERT(!st.seen(2, 4, 5));
 		}
 
 
@@ -60,7 +61,7 @@ class TestSeenTable : public CxxTest::TestSuite
 				TS_ASSERT(!original.seen(0, 1, 3));
 
 				mue::Seen_table gen2(gen1.clone());
-				gen1.add_meeting(3, 4, 5);
+				gen2.add_meeting(3, 4, 5);
 
 				TS_ASSERT(gen2.seen(0, 1, 2));
 				TS_ASSERT(gen2.seen(3, 4, 5));
