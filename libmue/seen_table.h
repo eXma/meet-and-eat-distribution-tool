@@ -3,14 +3,13 @@
 
 #include "config.h"
 
-#include <boost/noncopyable.hpp>
 #include <vector>
 #include <list>
 #include <bitset>
 
 namespace mue {
 
-class Seen_table : boost::noncopyable
+class Seen_table
 {
 
 	private:
@@ -34,11 +33,14 @@ class Seen_table : boost::noncopyable
 
 		Seen_table(Seen_table const &old, int new_generation);
 
-
-
 		void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b);
 
 	public:
+
+		Seen_table( const Seen_table& ) = delete;
+		Seen_table& operator=( const Seen_table& ) = delete;
+		Seen_table& operator=( const Seen_table&& ) = delete;
+
 
 		Seen_table(Seen_table&& other);
 		int generation() const { return _generation; }
