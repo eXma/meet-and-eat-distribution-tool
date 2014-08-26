@@ -5,7 +5,7 @@ compiler:
     - clang
 before_install:
     - travis_retry sudo apt-get update -qq
-    - travis_retry apt-get install libboost-python-dev cxxtest cmake extra-cmake-modules
+    - travis_retry sudo apt-get install libboost-python-dev cxxtest cmake extra-cmake-modules
 before_script:
     - mkdir build
     - cd build
