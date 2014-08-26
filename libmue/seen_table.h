@@ -40,6 +40,9 @@ class Seen_table : boost::noncopyable
 
 	public:
 
+		Seen_table(Seen_table&& other);
+
+
 		Seen_table clone() { return Seen_table(*this, _generation + 1); }
 
 		bool seen(Team_id id_1, Team_id id_2, Team_id id_3) const

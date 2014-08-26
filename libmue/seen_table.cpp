@@ -22,7 +22,16 @@ mue::Seen_table::Seen_table(Seen_table const &old, int new_generation)
 	_generation(new_generation),
 	_max_teams(old._max_teams),
 	_table(old._table)
-{}
+{ }
+
+
+mue::Seen_table::Seen_table(Seen_table&& other)
+:
+	_generation(std::move(other._generation)),
+	_max_teams(std::move(other._max_teams)),
+	_table(std::move(other._table)),
+	_allocated_lines(std::move(other._allocated_lines))
+{ }
 
 
 mue::Seen_table::Seen_table(int max_teams)
