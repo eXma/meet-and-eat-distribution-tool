@@ -50,3 +50,5 @@ mue::Seen_table::~Seen_table()
 	for (Seen_data * data : _allocated_lines)
 		delete data;
 }
+
+std::vector<mue::Seen_table::Seen_data::Seen_bitset> mue::Seen_table::_id_bitsets;
