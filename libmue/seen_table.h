@@ -41,6 +41,7 @@ class Seen_table : boost::noncopyable
 	public:
 
 		Seen_table(Seen_table&& other);
+		int generation() const { return _generation; }
 
 
 		Seen_table clone() { return Seen_table(*this, _generation + 1); }
