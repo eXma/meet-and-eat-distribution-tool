@@ -16,7 +16,7 @@ class Team {
 
 		Team() {}
 	public:
-		Team(Team_id id)
+		Team(Team_id id) noexcept
 		: _id(id)
 		{}
 
