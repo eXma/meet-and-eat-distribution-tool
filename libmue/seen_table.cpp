@@ -1,5 +1,7 @@
 #include "seen_table.h"
 
+#include <boost/assert.hpp>
+
 void mue::Seen_table::_update_table(Team_id table_idx, Team_id team_a, Team_id team_b) noexcept {
 	if (_table[table_idx]->generation < _generation) {
 		 Seen_data * new_data = new Seen_data(*_table[table_idx]);
@@ -40,6 +42,8 @@ mue::Seen_table::Seen_table(int max_teams) noexcept
 	_max_teams(max_teams),
 	_table(max_teams, 0)
 {
+	BOOST_ASSERT(max_teams <= MAX_TEAMS);
+
 	for (int i = 0; i < max_teams; ++i) {
 		Seen_data * new_data = new Seen_data(0);
 		_allocated_lines.push_back(new_data);
