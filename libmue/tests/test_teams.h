@@ -20,7 +20,7 @@ class TestTeamClass : public CxxTest::TestSuite
 			TS_ASSERT(t1 == t3);
 			TS_ASSERT(mue::Team_id(t1) == 0);
 
-			TS_ASSERT_EQUALS(t1, 0);
+			TS_ASSERT_EQUALS(mue::Team_id(t1), 0);
 			TS_ASSERT_EQUALS(t1.id(), 0);
 		}
 };
