@@ -16,7 +16,7 @@ class Team {
 
 		Team() {}
 	public:
-		Team(Team_id id) noexcept
+		explicit Team(Team_id id) noexcept
 		: _id(id)
 		{}
 
@@ -26,13 +26,6 @@ class Team {
 		inline bool operator>=(const Team& other) const { return _id >= other._id; }
 		inline bool operator==(const Team& other) const { return _id == other._id; }
 		inline bool operator!=(const Team& other) const { return _id != other._id; }
-
-		inline bool operator<(const  Team_id other) const { return _id < other; }
-		inline bool operator>(const  Team_id other) const { return _id > other; }
-		inline bool operator<=(const Team_id other) const { return _id <= other; }
-		inline bool operator>=(const Team_id other) const { return _id >= other; }
-		inline bool operator==(const Team_id other) const { return _id == other; }
-		inline bool operator!=(const Team_id other) const { return _id != other; }
 
 		inline operator Team_id() const { return _id; }
 		inline Team_id id() const { return _id; }
