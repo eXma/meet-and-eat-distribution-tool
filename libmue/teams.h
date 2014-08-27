@@ -32,7 +32,7 @@ class Team {
 
 };
 
-std::ostream& operator<<(std::ostream& os, Team const& team) { return os << int(team.id()); }
+std::ostream& operator<<(std::ostream& os, Team const& team);
 
 }
 #endif
