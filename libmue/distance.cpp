@@ -14,7 +14,7 @@ mue::Distance_matrix::Distance_matrix(int teamcount) noexcept
 }
   
 
-void mue::Distance_matrix::set_cost(Team const &source, Team const &destination, Distance cost)
+void mue::Distance_matrix::set_cost(Team_id const &source, Team_id const &destination, Distance cost)
 {
 	BOOST_ASSERT(source < _teamcount);
 	BOOST_ASSERT(destination < _teamcount);

@@ -10,7 +10,7 @@
 class TestDistances : public CxxTest::TestSuite
 {
 	public:
-		void testDistanceMatrix(void)
+		void testDistanceMatrixTeams(void)
 		{
 			mue::Distance_matrix distances(MAX_TEAMS);
 
@@ -25,6 +25,26 @@ class TestDistances : public CxxTest::TestSuite
 			for (int i = 0; i < MAX_TEAMS; ++i) {
 				for (int j = i; j < MAX_TEAMS; ++j) {
 					TS_ASSERT_EQUALS(distances.lookup(mue::Team(i), mue::Team(j)), cnt++)
+				}
+			}
+
+		}
+
+		void testDistanceMatrixIds(void)
+		{
+			mue::Distance_matrix distances(MAX_TEAMS);
+
+			int cnt(0);
+			for (int i = 0; i < MAX_TEAMS; ++i) {
+				for (int j = i; j < MAX_TEAMS; ++j) {
+					distances.set_cost(i, j, cnt++);
+				}
+			}
+
+			cnt = 0;
+			for (int i = 0; i < MAX_TEAMS; ++i) {
+				for (int j = i; j < MAX_TEAMS; ++j) {
+					TS_ASSERT_EQUALS(distances.lookup(i, j), cnt++)
 				}
 			}
 

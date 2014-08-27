@@ -21,9 +21,9 @@ namespace mue {
 		public:
 			Distance_matrix(int teamcount) noexcept;
 
-			void set_cost(Team const &source, Team const &destination, Distance cost);
+			void set_cost(Team_id const &source, Team_id const &destination, Distance cost);
 
-			Distance lookup(Team const &source, Team const &destination) const noexcept
+			Distance lookup(Team_id const &source, Team_id const &destination) const noexcept
 			{
 				return _table[source][destination];
 			}
