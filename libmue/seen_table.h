@@ -31,9 +31,9 @@ class Seen_table
 		std::vector<Seen_data *> _table;
 		std::list<Seen_data *> _allocated_lines;
 
-		Seen_table(Seen_table const &old, int new_generation);
+		Seen_table(Seen_table const &old, int new_generation) noexcept;
 
-		void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b);
+		void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b) noexcept;
 
 	public:
 
@@ -42,21 +42,21 @@ class Seen_table
 		Seen_table& operator=( const Seen_table&& ) = delete;
 
 
-		Seen_table(Seen_table&& other);
-		int generation() const { return _generation; }
+		Seen_table(Seen_table&& other) noexcept;
+		int generation() const noexcept { return _generation; }
 
 
-		Seen_table clone() { return Seen_table(*this, _generation + 1); }
+		Seen_table clone() noexcept { return Seen_table(*this, _generation + 1); }
 
-		bool seen(Team_id id_1, Team_id id_2, Team_id id_3) const
+		bool seen(Team_id id_1, Team_id id_2, Team_id id_3) const noexcept
 		{
 			return (_table[id_1]->bitset & (_id_bitsets[id_2] | _id_bitsets[id_3])).any()
 				|| (_table[id_2]->bitset & _id_bitsets[id_3]).any();
 		}
 
-		void add_meeting(Team_id id_1, Team_id id_2, Team_id id_3);
+		void add_meeting(Team_id id_1, Team_id id_2, Team_id id_3) noexcept;
 
-		Seen_table(int max_teams);
+		Seen_table(int max_teams) noexcept;
 
 		~Seen_table();
 };
