@@ -13,18 +13,16 @@
 
 namespace mue {
 
-class Team;
-
 
 class Guest_tuple_generator
 {
 	public:
-		typedef std::pair<Team*, Team*> GuestPair;
+		typedef std::pair<Team_id, Team_id> GuestPair;
 
 	private:
-		typedef std::vector<Team* >::const_iterator  Team_iterator;
+		typedef std::vector<Team_id>::const_iterator  Team_iterator;
 
-		std::vector<Team* > _possible_guests;
+		std::vector<Team_id> _possible_guests;
 		Team_iterator _guest_end;
 
 	public:
@@ -89,7 +87,7 @@ class Guest_tuple_generator
 
 		typedef Iterator iterator;
 
-		Guest_tuple_generator(std::vector<Team*> const& guests, std::unordered_set<Team_id> const& used);
+		Guest_tuple_generator(std::vector<Team_id> const& guests, std::unordered_set<Team_id> const& used);
 
 		iterator begin() { return Iterator(_possible_guests.begin(), _guest_end); }
 
