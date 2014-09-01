@@ -16,7 +16,7 @@ namespace mue {
 	{
 		private:
 			std::vector<std::vector<Distance> > _table;
-			int _teamcount;
+			unsigned int _teamcount;
 
 		public:
 			Distance_matrix(int teamcount) noexcept;

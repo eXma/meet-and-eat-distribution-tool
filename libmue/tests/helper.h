@@ -6,7 +6,7 @@
 #include "teams.h"
 
 namespace test {
-	std::vector<mue::Team> make_testteams(int num);
+	std::vector<mue::Team> make_testteams(unsigned int num);
 }
 
 #endif

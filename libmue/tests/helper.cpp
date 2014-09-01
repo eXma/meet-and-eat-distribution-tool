@@ -1,6 +1,6 @@
 #include "helper.h"
 
-std::vector<mue::Team> test::make_testteams(int num)
+std::vector<mue::Team> test::make_testteams(unsigned int num)
 {
 	std::vector<mue::Team> teams;
 	
