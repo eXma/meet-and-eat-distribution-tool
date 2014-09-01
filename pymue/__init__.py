@@ -1,1 +1,1 @@
-from _pymue import peng, Team, DistanceMatrix, SeenTable
+from _pymue import peng, Team, DistanceMatrix, SeenTable, GuestTupleGenerator

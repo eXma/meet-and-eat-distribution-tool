@@ -5,8 +5,10 @@
 #include "distances.h"
 
 #include "seen_table_wrapper.h"
+#include "guest_tuple_iterator_wrapper.h"
 
 
+#include <vector>
 
 char const * peng() {
 	return mue::peng().c_str();
@@ -31,4 +33,12 @@ BOOST_PYTHON_MODULE (_pymue)
 		.def("generation", &pymue::Seen_table_wrapper::generation)
 		.def("seen", &pymue::Seen_table_wrapper::seen)
 		.def("add_meeting", &pymue::Seen_table_wrapper::add_meeting);
+
+
+	class_<mue::Guest_tuple_generator::GuestPair>("GuestPair", init<mue::Team_id, mue::Team_id>())
+		.def_readonly("first",  &mue::Guest_tuple_generator::GuestPair::first)
+		.def_readonly("second", &mue::Guest_tuple_generator::GuestPair::second);
+
+	class_<pymue::Guest_tuple_generator_wrapper>("GuestTupleGenerator", init<list, list>())
+		.def("__iter__", iterator<pymue::Guest_tuple_generator_wrapper>());
 }
