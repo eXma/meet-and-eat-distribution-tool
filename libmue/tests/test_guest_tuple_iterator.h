@@ -13,7 +13,7 @@
 class TestGuestTupleGenerator : public CxxTest::TestSuite
 {
 	public:
-		void testSimpleGeneration(void)
+		void testCountGeneration(void)
 		{
 			std::vector<mue::Team> teams(test::make_testteams(8));
 
@@ -28,6 +28,26 @@ class TestGuestTupleGenerator : public CxxTest::TestSuite
 			mue::Guest_tuple_generator gen(team_ids, used);
 			std::for_each(gen.begin(), gen.end(), [&count](mue::Guest_tuple_generator::GuestPair const&) { ++count; });
 			TS_ASSERT_EQUALS(count, 28)
+		}
+
+		void testCorrectGeneration(void)
+		{
+			std::vector<mue::Team> teams(test::make_testteams(8));
+
+			std::unordered_set<mue::Team_id> used;
+
+			std::vector<mue::Team_id> team_ids;
+			for (mue::Team& t: teams) {
+				team_ids.push_back(t);
+			}
+			std::unordered_set<mue::Team_id> lookup_table(team_ids.begin(), team_ids.end());
+
+			mue::Guest_tuple_generator gen(team_ids, used);
+			for (mue::Guest_tuple_generator::GuestPair const &pair : gen) {
+				TS_ASSERT(lookup_table.find(pair.second) != lookup_table.end());
+				TS_ASSERT(lookup_table.find(pair.first) != lookup_table.end());
+				std::cout << std::hex << pair.second << " <> " << std::hex << (int)pair.first << std::endl;
+			}
 		}
 
 		void testUniqueGeneration(void)
