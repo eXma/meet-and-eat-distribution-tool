@@ -7,6 +7,7 @@
 #include <utility>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 #include "config.h"
 
@@ -26,7 +27,7 @@ class Guest_tuple_generator
 		Team_iterator _guest_end;
 
 	public:
-		class Iterator  : public std::iterator<std::input_iterator_tag, GuestPair> {
+		class Iterator  : public std::iterator<std::input_iterator_tag, const GuestPair> {
 			private:
 				friend class Guest_tuple_generator;
 
@@ -76,7 +77,7 @@ class Guest_tuple_generator
 				inline bool operator== (Iterator const& other) const { return (_guest_a == other._guest_a) && (_guest_b == other._guest_b); }
 				inline bool operator!= (Iterator const& other) const { return !(*this == other); }
 
-				inline GuestPair operator* ()
+				inline const GuestPair operator* ()
 				{
 					assert(_guest_a != _end);
 					assert(_guest_b != _end);
@@ -89,9 +90,9 @@ class Guest_tuple_generator
 
 		Guest_tuple_generator(std::vector<Team_id> const& guests, std::unordered_set<Team_id> const& used);
 
-		iterator begin() { return Iterator(_possible_guests.begin(), _guest_end); }
+		iterator begin() const { return Iterator(_possible_guests.begin(), _guest_end); }
 
-		iterator end() { return Iterator(_guest_end, _guest_end); }
+		iterator end() const { return Iterator(_guest_end, _guest_end); }
 };
 
 std::ostream& operator<< (std::ostream& os, Guest_tuple_generator::GuestPair const& p);
