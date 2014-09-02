@@ -68,10 +68,6 @@ def round_guests(hosts):
     return [team for team in teams if team not in hosts]
 
 
-def not_seen(host, guests, seen_table):
-    return not seen_table.seen(host, guests.first, guests.second)
-
-
 def add_meeting(host, guests, seen_table, meetings, stations):
     tbl = seen_table.clone()
     tbl.add_meeting(host, guests.first, guests.second)
@@ -83,7 +79,7 @@ def add_meeting(host, guests, seen_table, meetings, stations):
     return tbl
 
 
-def distance(current_distance, table_idx, prev_stations, teams, host):
+def distance(current_distance, prev_stations, teams, host):
     for team in teams:
         prev_host = prev_stations[team]
         dist = distance_matrix.lookup(prev_host, host)
@@ -106,6 +102,25 @@ def guestsort(a, b):
         return 0
     else:
         return 1
+
+
+def determine_guests(current_guests, used_guests, actual_host, seen_table, current_round, current_distance, last_stations):
+    possible_guests = []
+    for guests in pymue.GuestTupleGenerator(current_guests, used_guests):
+        if not seen_table.seen(actual_host, guests.first, guests.second):
+            if current_round > 0:
+                actual_distance = distance(current_distance, last_stations,
+                                           [guests.first, guests.second], actual_host)
+                if actual_distance >= best_distance:
+                    #print "skip combination in round", current_round, "for guests dist", actual_distance, "best", best_distance
+                    continue
+            else:
+                actual_distance = calculation.dummy_distance(actual_host, guests)
+            possible_guests.append((actual_distance, guests))
+
+
+    possible_guests.sort(guestsort)
+    return possible_guests;
 
 
 def deploy_host(host_idx, current_hosts, current_round, current_guests, used_guests, seen_table, meetings_list,
@@ -133,27 +148,15 @@ def deploy_host(host_idx, current_hosts, current_round, current_guests, used_gue
     tests = cnt_hosts * 3
     actual_host = current_hosts[host_idx]
     if current_round > 0:
-        current_distance = distance(current_distance, current_round - 1, stations_list[current_round - 1],
+        current_distance = distance(current_distance, stations_list[current_round - 1],
                                     [actual_host], actual_host)
         if current_distance >= best_distance:
             #print "skip combination in round", current_round, "for host dist", current_distance, "best", best_distance
             return
 
-    possible_guests = []
-    for guests in pymue.GuestTupleGenerator(current_guests, used_guests):
-        if not_seen(actual_host, guests, seen_table):
-            if current_round > 0:
-                actual_distance = distance(current_distance, current_round - 1, stations_list[current_round - 1],
-                                           [guests.first, guests.second], actual_host)
-                if actual_distance >= best_distance:
-                    #print "skip combination in round", current_round, "for guests dist", actual_distance, "best", best_distance
-                    continue
-            else:
-                actual_distance = calculation.dummy_distance(actual_host, guests)
-            possible_guests.append((actual_distance, guests))
+    possible_guests = determine_guests(current_guests, used_guests, actual_host, seen_table, current_round, current_distance, stations_list[current_round - 1])
 
 
-    possible_guests.sort(guestsort)
     if current_round > 0:
         tests = cnt_hosts / 3
 
