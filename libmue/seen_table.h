@@ -46,7 +46,7 @@ class Seen_table
 		int generation() const noexcept { return _generation; }
 
 
-		Seen_table clone() noexcept { return Seen_table(*this, _generation + 1); }
+		Seen_table clone() const noexcept { return Seen_table(*this, _generation + 1); }
 
 		bool seen(Team_id id_1, Team_id id_2, Team_id id_3) const noexcept
 		{
