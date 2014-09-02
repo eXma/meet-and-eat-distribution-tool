@@ -6,7 +6,7 @@ find_package(CxxTest REQUIRED)
 
 enable_testing()
 
-set(libmue_TESTS simple.h test_seen_table.h test_guest_tuple_iterator.h test_teams.h test_distances.h)
+set(libmue_TESTS test_seen_table.h test_guest_tuple_iterator.h test_teams.h test_distances.h test_calculation.h)
 #file(GLOB libmue_TESTS RELATIVE . *.h)
 
 get_target_property(libmue_INCLUDE_DIRS libmue INCLUDE_DIRECTORIES)
