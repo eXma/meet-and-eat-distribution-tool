@@ -45,7 +45,7 @@ for distance_run in distance_data:
                                      team_map[int(dst)],
                                      way_cost(distance_run[src][dst]))
 
-
+calculation = pymue.Calculation(cnt, distance_matrix)
 
 print "calculate best routes...."
 
@@ -93,14 +93,6 @@ def distance(current_distance, table_idx, prev_stations, teams, host):
 
 second_hosts_list = round_hosts(1)
 second_hosts_set = set(second_hosts_list)
-
-
-def dummy_distance(host, guests):
-    for guest in (guests.first, guests.second):
-        if guest in second_hosts_set:
-            return  distance_matrix.lookup(host, guest)
-
-    return distance_matrix.lookup(host, choice(second_hosts_list)) * 2
 
 
 i = 0
@@ -157,7 +149,7 @@ def deploy_host(host_idx, current_hosts, current_round, current_guests, used_gue
                     #print "skip combination in round", current_round, "for guests dist", actual_distance, "best", best_distance
                     continue
             else:
-                actual_distance = dummy_distance(actual_host, guests)
+                actual_distance = calculation.dummy_distance(actual_host, guests)
             possible_guests.append((actual_distance, guests))
 
 
