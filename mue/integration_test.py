@@ -106,13 +106,12 @@ def guestsort(a, b):
 
 def determine_guests(current_guests, used_guests, actual_host, seen_table, current_round, current_distance, last_stations):
     possible_guests = []
+    round_data = pymue.RoundData(current_round, [], current_guests, [last_stations[i] for i in sorted(last_stations.keys())])
     for guests in pymue.GuestTupleGenerator(current_guests, used_guests):
         if not seen_table.seen(actual_host, guests.first, guests.second):
             if current_round > 0:
-                actual_distance = distance(current_distance, last_stations,
-                                           [guests.first, guests.second], actual_host)
+                actual_distance = calculation.guest_distance(round_data, actual_host, guests) + current_distance
                 if actual_distance >= best_distance:
-                    #print "skip combination in round", current_round, "for guests dist", actual_distance, "best", best_distance
                     continue
             else:
                 actual_distance = calculation.dummy_distance(actual_host, guests)
