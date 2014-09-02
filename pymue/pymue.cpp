@@ -6,7 +6,7 @@
 
 #include "seen_table_wrapper.h"
 #include "guest_tuple_iterator_wrapper.h"
-
+#include "calculation_wrapper.h"
 
 #include <vector>
 
@@ -36,6 +36,14 @@ BOOST_PYTHON_MODULE (_pymue)
 	class_<pymue::Guest_tuple_generator_wrapper>("GuestTupleGenerator", init<list, list>())
 		.def("__iter__", iterator<pymue::Guest_tuple_generator_wrapper>());
 
-	class_<mue::Calculation>("Calculation", init<unsigned int, mue::Distance_matrix>())
-		.def("dummy_distance", &mue::Calculation::dummy_distance);
+	//class_<mue::Calculation::Round_data>("RoundData", init<>())
+	class_<pymue::Calculation_wrapper::Round_data_wrapper>("RoundData", init<unsigned int, list, list, list>())
+		.def_readonly("round", &pymue::Calculation_wrapper::Round_data_wrapper::round)
+		.def("first_round", &pymue::Calculation_wrapper::Round_data_wrapper::first_round)
+		.def("prev_host", &pymue::Calculation_wrapper::Round_data_wrapper::prev_host);
+
+	class_<pymue::Calculation_wrapper>("Calculation", init<unsigned int, mue::Distance_matrix>())
+		.def("dummy_distance", &mue::Calculation::dummy_distance)
+		.def("guest_distance", &pymue::Calculation_wrapper::guest_distance);
+
 }
