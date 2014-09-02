@@ -46,7 +46,6 @@ class TestGuestTupleGenerator : public CxxTest::TestSuite
 			for (mue::Guest_tuple_generator::GuestPair const &pair : gen) {
 				TS_ASSERT(lookup_table.find(pair.second) != lookup_table.end());
 				TS_ASSERT(lookup_table.find(pair.first) != lookup_table.end());
-				std::cout << std::hex << pair.second << " <> " << std::hex << (int)pair.first << std::endl;
 			}
 		}
 
