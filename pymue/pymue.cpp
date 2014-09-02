@@ -10,25 +10,19 @@
 
 #include <vector>
 
-char const * peng() {
-	return mue::peng().c_str();
-}
-
 
 BOOST_PYTHON_MODULE (_pymue)
 {
 	using namespace boost::python;
 
-	def ("peng", peng);
-
 	class_<mue::Team>("Team", init<int>())
 		.def("id", &mue::Team::id);
 
-	class_<mue::Distance_matrix>("DistanceMatrix", init<int>())
+	class_<mue::Distance_matrix>("DistanceMatrix", init<unsigned int>())
 		.def("set_cost", &mue::Distance_matrix::set_cost)
 		.def("lookup", &mue::Distance_matrix::lookup);
 
-	class_<pymue::Seen_table_wrapper>("SeenTable", init<int>())
+	class_<pymue::Seen_table_wrapper>("SeenTable", init<unsigned int>())
 		.def("clone", &pymue::Seen_table_wrapper::clone)
 		.def("generation", &pymue::Seen_table_wrapper::generation)
 		.def("seen", &pymue::Seen_table_wrapper::seen)
@@ -41,4 +35,7 @@ BOOST_PYTHON_MODULE (_pymue)
 
 	class_<pymue::Guest_tuple_generator_wrapper>("GuestTupleGenerator", init<list, list>())
 		.def("__iter__", iterator<pymue::Guest_tuple_generator_wrapper>());
+
+	class_<mue::Calculation>("Calculation", init<unsigned int, mue::Distance_matrix>())
+		.def("dummy_distance", &mue::Calculation::dummy_distance);
 }
