@@ -7,6 +7,8 @@ mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &dis
 :
 	_teamcount(teamcount),
 	_teams_per_round(teamcount / 3),
+	_round_hosts(3),
+	_round_guests(3),
 	_distance_matrix(distance_matrix),
 	_best_distance(std::numeric_limits<float>::max()),
 #ifndef PREDEFINED_RANDOM
@@ -18,6 +20,15 @@ mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &dis
 {
 	BOOST_ASSERT(_teamcount <= MAX_TEAMS);
 	BOOST_ASSERT(_teamcount / 3 == float(_teamcount / 3));
+
+	for (unsigned int round = 0; round < 3; ++round) {
+		for (Team_id team = 0; team < teamcount; ++team) {
+			if (_is_round_host(team, round))
+				_round_hosts[round].push_back(team);
+			else
+				_round_guests[round].push_back(team);
+		}
+	}
 
 #ifdef PREDEFINED_RANDOM
 	std::random_device randd;

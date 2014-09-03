@@ -140,10 +140,12 @@ namespace mue {
 
 		private:
 
-			unsigned int _teamcount;
-			unsigned int _teams_per_round;
-			Distance_matrix const _distance_matrix;
-			Distance _best_distance;
+			unsigned int                        const _teamcount;
+			unsigned int                        const _teams_per_round;
+			std::vector<std::vector<Team_id> >        _round_hosts;
+			std::vector<std::vector<Team_id> >        _round_guests;
+			Distance_matrix                     const _distance_matrix;
+			Distance                                  _best_distance;
 
 #ifndef PREDEFINED_RANDOM
 			mutable std::uniform_int_distribution<Team_id> _team_round_random;
@@ -152,7 +154,7 @@ namespace mue {
 			std::vector<Team_id> _team_shuffle;
 #endif
 
-			bool _is_round_host(Team_id team, Round round) const
+			bool _is_round_host(Team_id team, unsigned int round) const
 			{
 				return     (_teams_per_round * round       <= team)
 					&& (_teams_per_round * (round + 1) >  team);
