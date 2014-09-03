@@ -7,6 +7,7 @@ How to build and install:
     git clone https://github.com/janLo/meet-and-eat-distribution-tool.git
     cd meet-and-eat-distribution-tool
     mkdir build
+    cd build
     cmake -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_PATH> -DCMAKE_BUILD_TYPE=[Debug|Release] ..
     make all test install
 
