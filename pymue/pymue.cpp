@@ -69,4 +69,8 @@ BOOST_PYTHON_MODULE (_pymue)
 		.def("host_distance", &mue::Calculation::host_distance)
 		.def("determine_guest_candidates", &mue::Calculation::determine_guest_candidates);
 
+	enum_<mue::Calculation::Round>("Round")
+		.value("FIRST", mue::Calculation::FIRST)
+		.value("SECOND", mue::Calculation::SECOND)
+		.value("THIRD", mue::Calculation::THIRD);
 }
