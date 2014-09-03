@@ -102,7 +102,7 @@ std::ostream& mue::operator<<(std::ostream& os, mue::Calculation::Guest_candidat
 
 mue::Calculation::Round_data mue::Calculation::initial_round_data() const
 {
-	return Round_data(FIRST, _round_hosts[FIRST], _round_guests[FIRST], std::vector<Team_id>());
+	return Round_data(FIRST, _round_hosts[FIRST], _round_guests[FIRST], std::vector<std::vector<Team_id> >());
 }
 
 
@@ -110,5 +110,18 @@ mue::Calculation::Round_data mue::Calculation::next_round_data(Round_data const 
 {
 	BOOST_ASSERT(old.round < 2);
 	Round next_rount = static_cast<Round>(old.round + 1);
-	return Round_data(next_rount, _round_hosts[next_rount], _round_guests[next_rount], iteration.round_station);
+	std::vector<std::vector<Team_id> > station_backlog(old.prev_stations);
+	station_backlog.push_back(iteration.round_station);
+	return Round_data(next_rount, _round_hosts[next_rount], _round_guests[next_rount], station_backlog);
+}
+
+
+std::vector<mue::Team_id> mue::Calculation::round_stations(Round round, Round_data const &round_data, Iteration_data const &iteration_data) const
+{
+	BOOST_ASSERT(round <= round_data);
+
+	if (round == round_data.prev_stations.size())
+		return iteration_data.round_station;
+	
+	return round_data.prev_stations[round];
 }

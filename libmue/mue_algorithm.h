@@ -34,17 +34,18 @@ namespace mue {
 				Calculation::Round   const round;
 				std::vector<Team_id> const hosts;
 				std::vector<Team_id> const guests;
-				std::vector<Team_id> const prev_stations;
+
+				std::vector<std::vector<Team_id> > const prev_stations;
 
 				bool first_round() const { return round == Calculation::FIRST; }
 				Team_id prev_host(Team_id team) const {
-				       	return prev_stations[team];
-			       	}
+					return prev_stations.back()[team];
+				}
 
 				Round_data(Calculation::Round round,
 					   std::vector<Team_id> const &hosts,
 					   std::vector<Team_id> const &guests,
-					   std::vector<Team_id> const &prev_stations)
+					   std::vector<std::vector<Team_id> > const &prev_stations)
 				:
 					round(round),
 					hosts(hosts),
@@ -167,7 +168,7 @@ namespace mue {
 				return _team_round_random(_random_generator) + (_teams_per_round * round);
 			}
 #endif
-		
+
 		public:
 			Calculation(unsigned int teamcount, Distance_matrix const &distance_matrix);
 
@@ -184,7 +185,10 @@ namespace mue {
 			void update_best(float best) { _best_distance = best; }
 
 			Round_data initial_round_data() const;
+
 			Round_data next_round_data(Round_data const &round_data, Iteration_data const &data) const;
+
+			std::vector<Team_id> round_stations(Round round, Round_data const &round_data, Iteration_data const &iteration_data) const;
 	};
 
 	std::ostream& operator<<(std::ostream& os, Calculation::Guest_candidate const& candidate);

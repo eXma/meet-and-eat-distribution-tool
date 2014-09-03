@@ -68,7 +68,7 @@ class TestCalculation : public CxxTest::TestSuite
 			mue::Calculation::Round_data round_data(mue::Calculation::SECOND,
 								std::vector<mue::Team_id>(),
 								std::vector<mue::Team_id>(),
-								std::vector<mue::Team_id> {0,1,6,8,0,0,0,0,0});
+								std::vector<std::vector<mue::Team_id> > { std::vector<mue::Team_id>{0,1,6,8,0,0,0,0,0}});
 
 			TS_ASSERT_EQUALS(calc.guest_distance(round_data, 3, mue::Guest_tuple_generator::GuestPair(1, 2)), 1+2);
 			TS_ASSERT_EQUALS(calc.guest_distance(round_data, 0, mue::Guest_tuple_generator::GuestPair(6, 7)), 0+0);
