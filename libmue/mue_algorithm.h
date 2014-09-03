@@ -12,6 +12,8 @@
 #include "seen_table.h"
 
 
+#define PREDEFINED_RANDOM
+
 namespace mue {
 
 
@@ -141,10 +143,14 @@ namespace mue {
 			unsigned int _teamcount;
 			unsigned int _teams_per_round;
 			Distance_matrix const _distance_matrix;
-			mutable std::uniform_int_distribution<Team_id> _team_round_random;
-			mutable std::mt19937 _random_generator;
 			Distance _best_distance;
 
+#ifndef PREDEFINED_RANDOM
+			mutable std::uniform_int_distribution<Team_id> _team_round_random;
+			mutable std::mt19937 _random_generator;
+#else
+			std::vector<Team_id> _team_shuffle;
+#endif
 
 			bool _is_round_host(Team_id team, Round round) const
 			{
@@ -152,10 +158,12 @@ namespace mue {
 					&& (_teams_per_round * (round + 1) >  team);
 			}
 
+#ifndef PREDEFINED_RANDOM
 			Team_id _random_host(Round round) const
 			{
 				return _team_round_random(_random_generator) + (_teams_per_round * round);
 			}
+#endif
 		
 		public:
 			Calculation(unsigned int teamcount, Distance_matrix const &distance_matrix);

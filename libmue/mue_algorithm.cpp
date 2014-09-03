@@ -8,12 +8,26 @@ mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &dis
 	_teamcount(teamcount),
 	_teams_per_round(teamcount / 3),
 	_distance_matrix(distance_matrix),
+	_best_distance(std::numeric_limits<float>::max()),
+#ifndef PREDEFINED_RANDOM
 	_team_round_random(0, _teams_per_round -1),
-	_random_generator(std::random_device()()),
-	_best_distance(std::numeric_limits<float>::max())
+	_random_generator(std::random_device()())
+#else
+	_team_shuffle(teamcount * 2)
+#endif
 {
 	BOOST_ASSERT(_teamcount <= MAX_TEAMS);
 	BOOST_ASSERT(_teamcount / 3 == float(_teamcount / 3));
+
+#ifdef PREDEFINED_RANDOM
+	std::random_device randd;
+	std::mt19937 generator(randd());
+	std::uniform_int_distribution<Team_id> random(0, _teams_per_round -1);
+
+
+	for (Team_id team = 0; team < teamcount * 2; ++team)
+		_team_shuffle[team] = random(generator) + (_teams_per_round * SECOND);
+#endif
 }
 
 
@@ -23,7 +37,12 @@ mue::Distance mue::Calculation::dummy_distance(Team_id host, Guest_tuple_generat
 		return _distance_matrix.lookup(host, guests.first);
 	if (_is_round_host(guests.second, SECOND))
 		return _distance_matrix.lookup(host, guests.second);
+
+#ifdef PREDEFINED_RANDOM
+	return _distance_matrix.lookup(host, _team_shuffle[guests.first + guests.second]) * 2;
+#else
 	return _distance_matrix.lookup(host, _random_host(SECOND)) * 2;
+#endif
 }
 
 
