@@ -80,7 +80,7 @@ std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest
 	candidates.reserve(300);
 	Guest_tuple_generator generator(round_data.guests, iteration_data.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
-		if (! iteration_data.seen_table.seen(current_host, guests.first, guests.second)) {
+		if (! iteration_data.seen(current_host, guests.first, guests.second)) {
 			if (! round_data.first_round()) {
 				float single_distance = guest_distance(round_data, current_host, guests);
 				float distance = guest_distance(round_data, current_host, guests);
@@ -120,10 +120,13 @@ mue::Calculation::Round_data mue::Calculation::next_round_data(Round_data const 
 
 std::vector<mue::Team_id> mue::Calculation::round_stations(Round round, Round_data const &round_data, Iteration_data const &iteration_data) const
 {
-	BOOST_ASSERT(round <= round_data);
+	BOOST_ASSERT(round <= round_data.round);
 
 	if (round == round_data.prev_stations.size())
 		return iteration_data.round_station;
 
 	return round_data.prev_stations[round];
 }
+
+
+

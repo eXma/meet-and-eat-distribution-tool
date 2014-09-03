@@ -3,6 +3,7 @@
 
 #include <random>
 #include <cstdint>
+#include <memory>
 
 
 #include <boost/assert.hpp>
@@ -68,7 +69,7 @@ namespace mue {
 				Distance                    distance;
 				Guest_tuple_generator::Used_bits used_guests;
 				std::vector<Team_id>        round_station;
-				Seen_table                  seen_table;
+				std::shared_ptr<Seen_table> seen_table;
 
 				void set_station(Team_id host, Team_id guest1, Team_id guest2)
 				{
@@ -79,7 +80,7 @@ namespace mue {
 					used_guests.set(guest1);
 					used_guests.set(guest2);
 
-					seen_table.add_meeting(host, guest1, guest2);
+					seen_table->add_meeting(host, guest1, guest2);
 				}
 
 				Iteration_data(unsigned int teamcount)
@@ -87,7 +88,7 @@ namespace mue {
 					distance(0),
 					used_guests(),
 					round_station(teamcount),
-					seen_table(teamcount)
+					seen_table(new Seen_table(teamcount))
 				{ }
 
 				Iteration_data(unsigned int teamcount, Distance distance)
@@ -95,7 +96,7 @@ namespace mue {
 					distance(distance),
 					used_guests(),
 					round_station(teamcount),
-					seen_table(teamcount)
+					seen_table(new Seen_table(teamcount))
 				{ }
 
 				Iteration_data(Iteration_data const &other)
@@ -103,14 +104,29 @@ namespace mue {
 					distance(other.distance),
 					used_guests(other.used_guests),
 					round_station(other.round_station),
-					seen_table(other.seen_table.clone())
+					seen_table(other.seen_table)
 				{}
 
-				bool seen(Team_id host, Team_id guestA, Team_id guestB) const { return seen_table.seen(host, guestA, guestB); }
+				Iteration_data(Distance new_distance, Iteration_data const &other)
+				:
+					distance(new_distance),
+					used_guests(other.used_guests),
+					round_station(other.round_station),
+					seen_table(new Seen_table(other.seen_table->clone()))
+				{}
+
+				bool seen(Team_id host, Team_id guestA, Team_id guestB) const { return seen_table->seen(host, guestA, guestB); }
 
 				void clear_round_data()
 				{
 					used_guests.reset();
+				}
+
+				Iteration_data next_iteration(Distance new_distance, Team_id host, Guest_tuple_generator::GuestPair const &guests)
+				{
+					Iteration_data new_data(new_distance, *this);
+					new_data.set_station(host, guests.first, guests.second);
+					return new_data;
 				}
 			};
 
@@ -190,6 +206,7 @@ namespace mue {
 			Round_data next_round_data(Round_data const &round_data, Iteration_data const &data) const;
 
 			std::vector<Team_id> round_stations(Round round, Round_data const &round_data, Iteration_data const &iteration_data) const;
+
 	};
 
 	std::ostream& operator<<(std::ostream& os, Calculation::Guest_candidate const& candidate);
