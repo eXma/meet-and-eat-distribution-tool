@@ -69,7 +69,6 @@ def round_guests(hosts):
 
 
 def add_meeting(host, guests, iteration_data, meetings):
-    iteration_data.set_station(host, guests.first, guests.second)
 
     meeting = {host, guests.first, guests.second}
     meetings.append(meeting)
@@ -133,11 +132,13 @@ def deploy_host(host_idx, current_hosts, current_round, current_guests,  meeting
 
         new_iteration_data = pymue.IterationData(iteration_data)
         new_iteration_data.distance = actual_distance
+        new_iteration_data.set_station(actual_host, guests.first, guests.second)
+
         actual_meetings = list(meetings_list) # XXX copy.deepcopy(meetings)
         meetings = list(actual_meetings[current_round])
         actual_meetings[current_round] = meetings
-
         add_meeting(actual_host, guests, new_iteration_data, meetings)
+
         deploy_host(host_idx + 1, current_hosts, current_round, current_guests,
                     actual_meetings, new_iteration_data, round_data)
 
