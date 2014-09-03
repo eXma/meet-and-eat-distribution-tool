@@ -23,7 +23,7 @@ mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &dis
 
 	for (unsigned int round = 0; round < 3; ++round) {
 		for (Team_id team = 0; team < teamcount; ++team) {
-			if (_is_round_host(team, round))
+			if (_is_round_host(team, static_cast<Round>(round)))
 				_round_hosts[round].push_back(team);
 			else
 				_round_guests[round].push_back(team);
@@ -97,4 +97,18 @@ std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest
 std::ostream& mue::operator<<(std::ostream& os, mue::Calculation::Guest_candidate const& candidate)
 {
 	return os << "[(" << (int)candidate.guests.first << ", " << (int)candidate.guests.second << ")->" << candidate.distance << "]";
+}
+
+
+mue::Calculation::Round_data mue::Calculation::initial_round_data() const
+{
+	return Round_data(FIRST, _round_hosts[FIRST], _round_guests[FIRST], std::vector<Team_id>());
+}
+
+
+mue::Calculation::Round_data mue::Calculation::next_round_data(Round_data const &old, Iteration_data const &iteration) const
+{
+	BOOST_ASSERT(old.round < 2);
+	Round next_rount = static_cast<Round>(old.round + 1);
+	return Round_data(next_rount, _round_hosts[next_rount], _round_guests[next_rount], iteration.round_station);
 }

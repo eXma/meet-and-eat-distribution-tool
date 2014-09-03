@@ -2,6 +2,7 @@
 #define MUE_ALGORITHM_H
 
 #include <random>
+#include <cstdint>
 
 
 #include <boost/assert.hpp>
@@ -21,7 +22,7 @@ namespace mue {
 	class Calculation
 	{
 		public:
-			enum Round {
+			enum Round : std::uint8_t {
 				FIRST = 0,
 				SECOND = 1,
 				THIRD = 2
@@ -154,7 +155,7 @@ namespace mue {
 			std::vector<Team_id> _team_shuffle;
 #endif
 
-			bool _is_round_host(Team_id team, unsigned int round) const
+			bool _is_round_host(Team_id team, Round round) const
 			{
 				return     (_teams_per_round * round       <= team)
 					&& (_teams_per_round * (round + 1) >  team);
@@ -182,6 +183,8 @@ namespace mue {
 
 			void update_best(float best) { _best_distance = best; }
 
+			Round_data initial_round_data() const;
+			Round_data next_round_data(Round_data const &round_data, Iteration_data const &data) const;
 	};
 
 	std::ostream& operator<<(std::ostream& os, Calculation::Guest_candidate const& candidate);
