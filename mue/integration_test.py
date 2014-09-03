@@ -111,9 +111,7 @@ def deploy_host(host_idx, current_round, iteration_data, round_data):
             actual_distance = candidate.distance
         guests = candidate.guests
 
-        new_iteration_data = pymue.IterationData(iteration_data)
-        new_iteration_data.distance = actual_distance
-        new_iteration_data.set_station(actual_host, guests.first, guests.second)
+        new_iteration_data = iteration_data.next_iteration(actual_distance, actual_host, guests)
 
         deploy_host(host_idx + 1, current_round, new_iteration_data, round_data)
 
