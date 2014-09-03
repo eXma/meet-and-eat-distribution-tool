@@ -5,7 +5,6 @@
 #include "teams.h"
 #include "distances.h"
 
-
 #include <vector>
 
 
@@ -23,8 +22,9 @@ BOOST_PYTHON_MODULE (_pymue)
 	class_<std::vector<mue::Team_id> >("TeamVector")
 		.def(vector_indexing_suite<std::vector<mue::Team_id> >());
 
-	class_<pymue::Guest_tuple_generator_wrapper>("GuestTupleGenerator", init<list, list>())
-		.def("__iter__", iterator<pymue::Guest_tuple_generator_wrapper>());
+	class_<mue::Guest_tuple_generator::GuestPair>("GuestPair", init<mue::Team_id, mue::Team_id>())
+		.def_readonly("first",  &mue::Guest_tuple_generator::GuestPair::first)
+		.def_readonly("second", &mue::Guest_tuple_generator::GuestPair::second);
 
 	class_<mue::Calculation::Round_data>("RoundData", init<>())
 		.def_readonly("round", &mue::Calculation::Round_data::round)
