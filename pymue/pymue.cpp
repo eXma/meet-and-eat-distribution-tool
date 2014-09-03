@@ -22,18 +22,8 @@ BOOST_PYTHON_MODULE (_pymue)
 		.def("set_cost", &mue::Distance_matrix::set_cost)
 		.def("lookup", &mue::Distance_matrix::lookup);
 
-	class_<pymue::Seen_table_wrapper>("SeenTable", init<unsigned int>())
-		.def("clone", &pymue::Seen_table_wrapper::clone)
-		.def("generation", &pymue::Seen_table_wrapper::generation)
-		.def("seen", &pymue::Seen_table_wrapper::seen)
-		.def("add_meeting", &pymue::Seen_table_wrapper::add_meeting);
-
 	class_<std::vector<mue::Team_id> >("TeamVector")
 		.def(vector_indexing_suite<std::vector<mue::Team_id> >());
-
-	class_<mue::Guest_tuple_generator::GuestPair>("GuestPair", init<mue::Team_id, mue::Team_id>())
-		.def_readonly("first",  &mue::Guest_tuple_generator::GuestPair::first)
-		.def_readonly("second", &mue::Guest_tuple_generator::GuestPair::second);
 
 	class_<pymue::Guest_tuple_generator_wrapper>("GuestTupleGenerator", init<list, list>())
 		.def("__iter__", iterator<pymue::Guest_tuple_generator_wrapper>());
