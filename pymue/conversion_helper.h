@@ -25,6 +25,7 @@ namespace pymue {
 	std::vector<T> translate_vector(boost::python::list const &l)
 	{
 		std::vector<T> new_vec;
+		new_vec.reserve(boost::python::len(l));
 
 		for (int i= 0; i < boost::python::len(l); ++i) {
 			new_vec.push_back(boost::python::extract<T>(l[i]));
