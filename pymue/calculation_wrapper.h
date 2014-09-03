@@ -11,30 +11,41 @@
 namespace pymue {
 
 
-	class Calculation_wrapper : public mue::Calculation
-	{
+class Calculation_wrapper : public mue::Calculation
+{
+	public:
 
-		public:
+		struct Round_data_wrapper : mue::Calculation::Round_data
+		{
+			Round_data_wrapper(unsigned int round,
+					   boost::python::list hosts,
+					   boost::python::list guests,
+					   boost::python::list prev_stations);
 
-			struct Round_data_wrapper : mue::Calculation::Round_data
-			{
-				Round_data_wrapper(unsigned int round,
-						   boost::python::list hosts,
-						   boost::python::list guests,
-						   boost::python::list prev_stations);
-
-			};
+		};
 
 
-			Calculation_wrapper(unsigned int teamcount, mue::Distance_matrix distances);
+		Calculation_wrapper(unsigned int teamcount, mue::Distance_matrix distances);
 
-			mue::Distance guest_distance(Round_data_wrapper const &round_data, mue::Team_id host, mue::Guest_tuple_generator::GuestPair const &guests)
-			{
-				BOOST_ASSERT(!round_data.first_round() ||  round_data.prev_stations.size() == teamcount());
-				return mue::Calculation::guest_distance(round_data, host, guests);
-			}
+		mue::Distance host_distance(Round_data_wrapper const &round_data, mue::Team_id host) const
+		{
+			return mue::Calculation::host_distance(round_data, host);
+		}
 
-	};
+		mue::Distance guest_distance(Round_data_wrapper const &round_data,
+			       		     mue::Team_id host,
+					     mue::Guest_tuple_generator::GuestPair const &guests) const
+		{
+			return mue::Calculation::guest_distance(round_data, host, guests);
+		}
+
+		std::vector<mue::Calculation::Guest_candidate> determine_guest_candidates(Round_data_wrapper const &round_data,
+			       								  mue::Calculation::Iteration_data const &iteration_data,
+											  mue::Team_id current_host) const
+		{
+			return mue::Calculation::determine_guest_candidates(round_data, iteration_data, current_host);
+		}
+};
 }
 
 #endif

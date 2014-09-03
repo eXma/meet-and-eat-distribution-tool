@@ -35,4 +35,5 @@ pymue::Calculation_wrapper::Round_data_wrapper::Round_data_wrapper(unsigned int 
 				     translate_vector<mue::Team_id>(hosts),
 				     translate_vector<mue::Team_id>(guests),
 				     translate_vector<mue::Team_id>(prev_stations))
-{}
+{
+}
