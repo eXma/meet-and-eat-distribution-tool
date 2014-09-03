@@ -5,8 +5,6 @@
 #include "teams.h"
 #include "distances.h"
 
-#include "seen_table_wrapper.h"
-#include "guest_tuple_iterator_wrapper.h"
 
 #include <vector>
 
