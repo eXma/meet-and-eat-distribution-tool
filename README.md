@@ -2,7 +2,19 @@
 
 This should be a rewrite of the old python-only tool in c++ accelated python.
 
-How to build and install:
+
+## Requirements
+
+To build and run this you need:
+
+* cmake (tested with 2.8.12.2)
+* gcc (tested with g++ 4.9.1)
+* python (tested with 2.7.8)
+* boost (tested with 1.55)
+* boost.python (tested with 1.55)
+
+
+## How to build and install:
 
     git clone https://github.com/janLo/meet-and-eat-distribution-tool.git
     cd meet-and-eat-distribution-tool
