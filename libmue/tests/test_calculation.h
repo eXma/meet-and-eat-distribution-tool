@@ -24,7 +24,7 @@ class TestCalculation : public CxxTest::TestSuite
 				}
 			}
 
-			mue::Calculation  calc(9, matrix);
+			mue::Calculation  calc(9, matrix, 10);
 
 			for (mue::Team_id teamA = 0; teamA < 9; ++teamA) {
 				for (mue::Team_id teamB = 0; teamB < 9; ++teamB) {
@@ -64,7 +64,7 @@ class TestCalculation : public CxxTest::TestSuite
 				}
 			}
 
-			mue::Calculation  calc(9, matrix);
+			mue::Calculation  calc(9, matrix, 10);
 			mue::Calculation::Round_data round_data(mue::Calculation::SECOND,
 								std::vector<mue::Team_id>(),
 								std::vector<mue::Team_id>(),
