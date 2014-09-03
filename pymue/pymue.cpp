@@ -60,7 +60,7 @@ BOOST_PYTHON_MODULE (_pymue)
 	class_<std::vector<mue::Calculation::Guest_candidate> >("GuestCandidateVector")
 		.def(vector_indexing_suite<std::vector<mue::Calculation::Guest_candidate> >());
 
-	class_<mue::Calculation>("Calculation", init<unsigned int, mue::Distance_matrix>())
+	class_<mue::Calculation>("Calculation", init<unsigned int, mue::Distance_matrix, mue::Distance>())
 		.def("update_best", &mue::Calculation::update_best)
 		.def("initial_round_data", &mue::Calculation::initial_round_data)
 		.def("next_round_data", &mue::Calculation::next_round_data)
