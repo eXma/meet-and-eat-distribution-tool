@@ -3,8 +3,10 @@
 
 #define MAX_TEAMS  63
 
+#include <cstdint>
+
 namespace mue {
-	typedef unsigned char Team_id;
+	typedef std::uint8_t Team_id;
 }
 
 #endif
