@@ -34,7 +34,9 @@ namespace mue {
 				std::vector<Team_id> const prev_stations;
 
 				bool first_round() const { return round == Calculation::FIRST; }
-				Team_id prev_host(Team_id team) const { return prev_stations[team]; }
+				Team_id prev_host(Team_id team) const {
+				       	return prev_stations[team];
+			       	}
 
 				Round_data(Calculation::Round round,
 					   std::vector<Team_id> const &hosts,
@@ -71,6 +73,7 @@ namespace mue {
 					round_station[guest2] = host;
 					used_guests.insert(guest1);
 					used_guests.insert(guest2);
+					seen_table.add_meeting(host, guest1, guest2);
 				}
 
 				Iteration_data(unsigned int teamcount)
@@ -95,10 +98,43 @@ namespace mue {
 					used_guests(other.used_guests),
 					round_station(other.round_station),
 					seen_table(other.seen_table.clone())
-				{ }
+				{}
+
+				bool seen(Team_id host, Team_id guestA, Team_id guestB) const { return seen_table.seen(host, guestA, guestB); }
+
+				void clear_round_data()
+				{
+					used_guests.clear();
+				}
+
+				std::vector<Team_id> used_teams_list() const { return std::vector<Team_id>(used_guests.begin(), used_guests.end()); }
 			};
 
-			typedef std::pair<Distance, Guest_tuple_generator::GuestPair> Guest_candidate;
+
+			struct Guest_candidate
+			{
+				Distance distance;
+				Guest_tuple_generator::GuestPair guests;
+
+				Guest_candidate(Distance distance, Guest_tuple_generator::GuestPair const &guests)
+				: distance(distance), guests(guests)
+				{ }
+
+				bool operator ==(Guest_candidate const &other)
+				{
+					return other.distance == distance
+					    && other.guests.first == guests.first
+					    && other.guests.second == guests.second;
+				}
+
+				bool operator !=(Guest_candidate const &other)
+				{
+					return ! (*this == other);
+				}
+
+				Guest_candidate() : distance(0), guests(0, 0) { }
+			};
+
 
 		private:
 
@@ -130,10 +166,15 @@ namespace mue {
 
 			Distance guest_distance(Round_data const &round_data, Team_id host, Guest_tuple_generator::GuestPair const &guests) const;
 
+			Distance host_distance(Round_data const &round_data, Team_id host) const;
+
 			std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host) const;
+
+			void update_best(float best) { _best_distance = best; }
 
 	};
 
+	std::ostream& operator<<(std::ostream& os, Calculation::Guest_candidate const& candidate);
 
 }
 

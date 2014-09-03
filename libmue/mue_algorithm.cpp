@@ -31,7 +31,11 @@ mue::Distance mue::Calculation::guest_distance(Round_data const &round_data, Tea
 {
 	return _distance_matrix.lookup(round_data.prev_host(guests.first), host) +
 	       _distance_matrix.lookup(round_data.prev_host(guests.second), host);
-	      
+}
+
+mue::Distance mue::Calculation::host_distance(Round_data const &round_data, Team_id host) const
+{
+	return _distance_matrix.lookup(round_data.prev_host(host), host);
 }
 
 std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host) const
@@ -45,10 +49,16 @@ std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest
 				if (distance < _best_distance)
 					candidates.emplace_back(iteration_data.distance + guest_distance(round_data, current_host, guests), guests);
 			} else {
-				candidates.emplace_back(iteration_data.distance + dummy_distance(current_host, guests), guests);
+				candidates.emplace_back(dummy_distance(current_host, guests), guests);
 			}
 		}
 	}
-	std::sort(candidates.begin(), candidates.end(), [](Guest_candidate const &a, Guest_candidate const &b) { return a.first < b.first; });
+	std::sort(candidates.begin(), candidates.end(), [](Guest_candidate const &a, Guest_candidate const &b) { return a.distance < b.distance; });
 	return candidates;
+}
+
+
+std::ostream& mue::operator<<(std::ostream& os, mue::Calculation::Guest_candidate const& candidate)
+{
+	return os << "[(" << (int)candidate.guests.first << ", " << (int)candidate.guests.second << ")->" << candidate.distance << "]";
 }
