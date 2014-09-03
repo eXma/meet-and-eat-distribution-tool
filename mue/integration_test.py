@@ -46,7 +46,7 @@ for distance_run in distance_data:
                                      team_map[int(dst)],
                                      way_cost(distance_run[src][dst]))
 
-calculation = pymue.Calculation(cnt, distance_matrix)
+calculation = pymue.Calculation(cnt, distance_matrix, way_cost(MAX_WAY - 0.5))
 
 print "calculate best routes...."
 

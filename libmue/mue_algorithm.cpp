@@ -3,7 +3,7 @@
 
 #include "mue_algorithm.h"
 
-mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &distance_matrix)
+mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &distance_matrix, Distance max_single_distance)
 :
 	_teamcount(teamcount),
 	_teams_per_round(teamcount / 3),
@@ -11,6 +11,7 @@ mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &dis
 	_round_guests(3),
 	_distance_matrix(distance_matrix),
 	_best_distance(std::numeric_limits<float>::max()),
+	_max_single_distance(max_single_distance),
 #ifndef PREDEFINED_RANDOM
 	_team_round_random(0, _teams_per_round -1),
 	_random_generator(std::random_device()())
@@ -81,8 +82,9 @@ std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
 		if (! iteration_data.seen_table.seen(current_host, guests.first, guests.second)) {
 			if (! round_data.first_round()) {
-				float distance = iteration_data.distance + guest_distance(round_data, current_host, guests);
-				if (distance < _best_distance)
+				float single_distance = guest_distance(round_data, current_host, guests);
+				float distance = guest_distance(round_data, current_host, guests);
+				if (distance < _best_distance &&  single_distance < _max_single_distance)
 					candidates.emplace_back(iteration_data.distance + guest_distance(round_data, current_host, guests), guests);
 			} else {
 				candidates.emplace_back(dummy_distance(current_host, guests), guests);

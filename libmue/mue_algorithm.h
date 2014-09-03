@@ -148,6 +148,7 @@ namespace mue {
 			std::vector<std::vector<Team_id> >        _round_guests;
 			Distance_matrix                     const _distance_matrix;
 			Distance                                  _best_distance;
+			Distance                            const _max_single_distance;
 
 #ifndef PREDEFINED_RANDOM
 			mutable std::uniform_int_distribution<Team_id> _team_round_random;
@@ -170,7 +171,7 @@ namespace mue {
 #endif
 
 		public:
-			Calculation(unsigned int teamcount, Distance_matrix const &distance_matrix);
+			Calculation(unsigned int teamcount, Distance_matrix const &distance_matrix, Distance max_single_distance);
 
 			unsigned int teamcount() { return _teamcount; }
 
