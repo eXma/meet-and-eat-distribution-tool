@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <bitset>
 
 #include "config.h"
 
@@ -19,6 +20,8 @@ class Guest_tuple_generator
 {
 	public:
 		typedef std::pair<Team_id, Team_id> GuestPair;
+		typedef std::bitset<MAX_TEAMS>      Used_bits;
+		typedef std::unordered_set<Team_id> Used_set;
 
 	private:
 		typedef std::vector<Team_id>::const_iterator  Team_iterator;
@@ -88,7 +91,8 @@ class Guest_tuple_generator
 
 		typedef Iterator iterator;
 
-		Guest_tuple_generator(std::vector<Team_id> const& guests, std::unordered_set<Team_id> const& used);
+		Guest_tuple_generator(std::vector<Team_id> const& guests, Used_set  const& used);
+		Guest_tuple_generator(std::vector<Team_id> const& guests, Used_bits const& used);
 
 		iterator begin() const { return Iterator(_possible_guests.begin(), _guest_end); }
 
