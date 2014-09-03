@@ -64,7 +64,7 @@ namespace mue {
 			struct Iteration_data
 			{
 				Distance                    distance;
-				std::unordered_set<Team_id> used_guests;
+				Guest_tuple_generator::Used_bits used_guests;
 				std::vector<Team_id>        round_station;
 				Seen_table                  seen_table;
 
@@ -73,8 +73,10 @@ namespace mue {
 					round_station[host] = host;
 					round_station[guest1] = host;
 					round_station[guest2] = host;
-					used_guests.insert(guest1);
-					used_guests.insert(guest2);
+
+					used_guests.set(guest1);
+					used_guests.set(guest2);
+
 					seen_table.add_meeting(host, guest1, guest2);
 				}
 
@@ -106,10 +108,8 @@ namespace mue {
 
 				void clear_round_data()
 				{
-					used_guests.clear();
+					used_guests.reset();
 				}
-
-				std::vector<Team_id> used_teams_list() const { return std::vector<Team_id>(used_guests.begin(), used_guests.end()); }
 			};
 
 

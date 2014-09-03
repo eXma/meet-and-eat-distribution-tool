@@ -49,7 +49,6 @@ BOOST_PYTHON_MODULE (_pymue)
 		.def("seen", &mue::Calculation::Iteration_data::seen)
 		.def_readonly("round_station", &mue::Calculation::Iteration_data::round_station)
 		.def_readonly("used_guests", &mue::Calculation::Iteration_data::used_guests)
-		.def_readonly("used_list", &mue::Calculation::Iteration_data::used_teams_list)
 		.def_readwrite("distance", &mue::Calculation::Iteration_data::distance)
 		.def("set_station", &mue::Calculation::Iteration_data::set_station)
 		.def("clear_round_data", &mue::Calculation::Iteration_data::clear_round_data);
