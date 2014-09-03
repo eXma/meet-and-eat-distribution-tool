@@ -41,6 +41,12 @@ mue::Distance mue::Calculation::host_distance(Round_data const &round_data, Team
 std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host) const
 {
 	std::vector<Guest_candidate> candidates;
+	/*
+	 * 63 teams have 24 guests (2/3)
+	 * (math.factorial(24) / math.factorial(24-2)) / 2 = 276
+	 * So for guests of 63 Teams 300 elements are enough.
+	 */
+	candidates.reserve(300);
 	Guest_tuple_generator generator(round_data.guests, iteration_data.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
 		if (! iteration_data.seen_table.seen(current_host, guests.first, guests.second)) {
