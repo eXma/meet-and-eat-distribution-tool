@@ -55,28 +55,12 @@ cnt_hosts = cnt / 3
 seen = pymue.SeenTable(cnt)
 
 
-def round_hosts(round_num=0):
-    begin = cnt_hosts * round_num
-    end = begin + cnt_hosts
-    return teams[begin:end]
-
-
-def round_guests(hosts):
-    """
-    :param hosts: list of int
-    """
-    return [team for team in teams if team not in hosts]
-
-
 def add_meeting(host, guests, iteration_data, meetings):
 
     meeting = {host, guests.first, guests.second}
     meetings.append(meeting)
 
 
-
-second_hosts_list = round_hosts(1)
-second_hosts_set = set(second_hosts_list)
 
 
 i = 0
@@ -92,8 +76,6 @@ def deploy_host(host_idx, current_round, meetings_list, iteration_data, round_da
     if host_idx == cnt_hosts:
         if current_round < 2:
             new_round = current_round + 1
-            new_hosts = round_hosts(new_round)
-            new_guests = round_guests(new_hosts)
             round_data = calculation.next_round_data(round_data, iteration_data)
             iteration_data.clear_round_data()
             return deploy_host(0, new_round, meetings_list, iteration_data, round_data)
@@ -141,9 +123,6 @@ def deploy_host(host_idx, current_round, meetings_list, iteration_data, round_da
 
 
 def test():
-    current_hosts = round_hosts(0)
-    current_guests = round_guests(current_hosts)
-
     round_data = calculation.initial_round_data()
     iteration_data = pymue.IterationData(cnt)
     deploy_host(0, 0, [[], [], []], iteration_data, round_data)
