@@ -1,5 +1,3 @@
-SET(CMAKE_CXX_FLAGS "-std=c++11")
-
 # find files
 file(GLOB pymue_SOURCES *.cpp)
 file(GLOB pymue_PYTHON *.py)
