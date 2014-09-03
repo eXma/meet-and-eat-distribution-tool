@@ -1,4 +1,5 @@
 #include <limits>
+#include <algorithm>
 #include <iostream>
 
 #include "mue_algorithm.h"
@@ -69,7 +70,7 @@ mue::Distance mue::Calculation::host_distance(Round_data const &round_data, Team
 	return _distance_matrix.lookup(round_data.prev_host(host), host);
 }
 
-std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host) const
+std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host, size_t slice) const
 {
 	std::vector<Guest_candidate> candidates;
 	/*
@@ -92,7 +93,7 @@ std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest
 		}
 	}
 	std::sort(candidates.begin(), candidates.end(), [](Guest_candidate const &a, Guest_candidate const &b) { return a.distance < b.distance; });
-	return candidates;
+	return std::vector<Guest_candidate>(candidates.begin(), candidates.begin() + std::min(candidates.size(), slice));
 }
 
 

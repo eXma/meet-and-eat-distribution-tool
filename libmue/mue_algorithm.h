@@ -197,7 +197,7 @@ namespace mue {
 
 			Distance host_distance(Round_data const &round_data, Team_id host) const;
 
-			std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host) const;
+			std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host, size_t slice) const;
 
 			void update_best(float best) { _best_distance = best; }
 
