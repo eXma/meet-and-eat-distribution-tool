@@ -98,13 +98,13 @@ def deploy_host(host_idx, current_round, iteration_data, round_data):
         if iteration_data.distance >= best_distance:
             return
 
-    possible_guests = calculation.determine_guest_candidates(round_data, iteration_data, actual_host)
-
-
     if current_round > 0:
         tests = cnt_hosts / 3
 
-    for candidate in possible_guests[:tests]:
+    possible_guests = calculation.determine_guest_candidates(round_data, iteration_data, actual_host, tests)
+
+
+    for candidate in possible_guests:
         if current_round == 0:
             actual_distance = iteration_data.distance
         else:
