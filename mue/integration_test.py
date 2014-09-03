@@ -85,20 +85,18 @@ best_plan = None
 
 
 
-def deploy_host(host_idx, current_hosts, current_round, current_guests,  meetings_list,
-                iteration_data, round_data):
+def deploy_host(host_idx, current_round, meetings_list, iteration_data, round_data):
     """
     :param seen_table: dict of set
     """
-    if host_idx == len(current_hosts):
+    if host_idx == cnt_hosts:
         if current_round < 2:
             new_round = current_round + 1
             new_hosts = round_hosts(new_round)
             new_guests = round_guests(new_hosts)
-            round_data = pymue.RoundData(new_round, new_hosts, new_guests, [x for x in iteration_data.round_station])
+            round_data = calculation.next_round_data(round_data, iteration_data)
             iteration_data.clear_round_data()
-            return deploy_host(0, new_hosts, new_round, new_guests, meetings_list,
-                               iteration_data, round_data)
+            return deploy_host(0, new_round, meetings_list, iteration_data, round_data)
         else:
             global i, best_distance, best_plan
             i += 1
@@ -111,7 +109,7 @@ def deploy_host(host_idx, current_hosts, current_round, current_guests,  meeting
             return
 
     tests = cnt_hosts * 3
-    actual_host = current_hosts[host_idx]
+    actual_host = round_data.hosts[host_idx]
     if current_round > 0:
         iteration_data.distance = calculation.host_distance(round_data, actual_host) + iteration_data.distance
         if iteration_data.distance >= best_distance:
@@ -139,17 +137,16 @@ def deploy_host(host_idx, current_hosts, current_round, current_guests,  meeting
         actual_meetings[current_round] = meetings
         add_meeting(actual_host, guests, new_iteration_data, meetings)
 
-        deploy_host(host_idx + 1, current_hosts, current_round, current_guests,
-                    actual_meetings, new_iteration_data, round_data)
+        deploy_host(host_idx + 1, current_round, actual_meetings, new_iteration_data, round_data)
 
 
 def test():
     current_hosts = round_hosts(0)
     current_guests = round_guests(current_hosts)
 
-    round_data = pymue.RoundData(0, current_hosts, current_guests, [])
+    round_data = calculation.initial_round_data()
     iteration_data = pymue.IterationData(cnt)
-    deploy_host(0, current_hosts, 0, current_guests, [[], [], []], iteration_data, round_data)
+    deploy_host(0, 0, [[], [], []], iteration_data, round_data)
     print ""
     print "======best plan======"
     print "1st round:", best_plan[0]
