@@ -2,6 +2,7 @@ from random import choice
 import json
 import sys
 import pymue
+from collections import defaultdict
 
 MAX_WAY = 7.8
 
@@ -62,6 +63,16 @@ def add_meeting(host, guests, iteration_data, meetings):
 
 
 
+def generate_plan(round_data, iteration_data):
+    plan = []
+    for round_num in range(3):
+        round_set = defaultdict(set)
+        for (team_id, station) in enumerate(calculation.round_stations(pymue.Round(round_num), round_data, iteration_data)):
+            round_set[station].add(team_id)
+        plan.append(round_set.values())
+    return plan
+
+
 
 i = 0
 best_distance = sys.float_info.max
@@ -84,7 +95,7 @@ def deploy_host(host_idx, current_round, meetings_list, iteration_data, round_da
             i += 1
             #print "ENDPOINT", meetings_list
             if iteration_data.distance < best_distance:
-                print "new best (%i)" % i, iteration_data.distance, meetings_list
+                print "new best (%i)" % i, iteration_data.distance, generate_plan(round_data, iteration_data)
                 best_distance = iteration_data.distance
                 calculation.update_best(best_distance)
                 best_plan = meetings_list
