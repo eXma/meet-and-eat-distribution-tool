@@ -13,5 +13,5 @@ mue::Guest_tuple_generator::Guest_tuple_generator(std::vector<Team_id> const& gu
 
 std::ostream& mue::operator<< (std::ostream& os, Guest_tuple_generator::GuestPair const& p)
 {
-	return os << "[" << (p.first) << ", " << (p.second) << "]";
+	return os << "[" << ((int)p.first) << ", " << ((int)p.second) << "]";
 }
