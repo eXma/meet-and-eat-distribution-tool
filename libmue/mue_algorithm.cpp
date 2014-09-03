@@ -122,6 +122,6 @@ std::vector<mue::Team_id> mue::Calculation::round_stations(Round round, Round_da
 
 	if (round == round_data.prev_stations.size())
 		return iteration_data.round_station;
-	
+
 	return round_data.prev_stations[round];
 }
