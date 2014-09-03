@@ -51,6 +51,7 @@ BOOST_PYTHON_MODULE (_pymue)
 		.def_readonly("used_guests", &mue::Calculation::Iteration_data::used_guests)
 		.def_readwrite("distance", &mue::Calculation::Iteration_data::distance)
 		.def("set_station", &mue::Calculation::Iteration_data::set_station)
+		.def("next_iteration", &mue::Calculation::Iteration_data::next_iteration)
 		.def("clear_round_data", &mue::Calculation::Iteration_data::clear_round_data);
 
 	class_<mue::Calculation::Guest_candidate>("GuestCandidate", init<mue::Distance, mue::Guest_tuple_generator::GuestPair>())
