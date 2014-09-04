@@ -2,8 +2,11 @@
 #define MUE_ALGORITHM_H
 
 #include <random>
+#include <map>
 #include <cstdint>
 #include <memory>
+#include <algorithm>
+#include <ios>
 
 
 #include <boost/assert.hpp>
@@ -53,16 +56,9 @@ class Calculation
 				guests(guests),
 				prev_stations(prev_stations)
 			{ }
-
-			Round_data()
-			:
-				round(FIRST),
-				hosts(),
-				guests(),
-				prev_stations()
-			{}
 		};
 
+	private:
 
 		struct Iteration_data
 		{
@@ -161,15 +157,16 @@ class Calculation
 		};
 
 
-	private:
 
-		unsigned int                        const _teamcount;
-		unsigned int                        const _teams_per_round;
+		size_t                              const _teamcount;
+		size_t                              const _teams_per_round;
 		std::vector<std::vector<Team_id> >        _round_hosts;
 		std::vector<std::vector<Team_id> >        _round_guests;
 		Distance_matrix                     const _distance_matrix;
 		Distance                                  _best_distance;
 		Distance                            const _max_single_distance;
+		std::vector<std::vector<Team_id> >        _best_stations;
+		size_t                                    _solutions;
 
 #ifndef PREDEFINED_RANDOM
 		mutable std::uniform_int_distribution<Team_id> _team_round_random;
@@ -191,25 +188,15 @@ class Calculation
 		}
 #endif
 
-	public:
-		Calculation(unsigned int teamcount,
-			    Distance_matrix const &distance_matrix,
-			    Distance max_single_distance);
-
-		unsigned int teamcount() { return _teamcount; }
-
-		Distance dummy_distance(Team_id host, Guest_tuple_generator::GuestPair const &guests) const;
-
-		Distance guest_distance(Round_data const &round_data,
-					Team_id host,
-					Guest_tuple_generator::GuestPair const &guests) const;
-
-		Distance host_distance(Round_data const &round_data,
-				       Team_id host) const;
+		bool _distance_is_better(Distance new_dist) const  { return _best_distance > new_dist; }
+		void run_new_round(Round_data const &round_data, Iteration_data &iteration);
+		void run_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
+		void report_success(Round_data const &round_data, Iteration_data const &iteration);
+		void print_stations(std::vector<std::vector<Team_id> > const &stations);
 
 		std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data,
-									Iteration_data const &iteration_data, 
-									Team_id current_host, 
+									Iteration_data const &iteration_data,
+									Team_id current_host,
 									size_t slice) const;
 
 		void update_best(float best) { _best_distance = best; }
@@ -219,13 +206,31 @@ class Calculation
 		Round_data next_round_data(Round_data const &round_data,
 					   Iteration_data const &data) const;
 
-		std::vector<Team_id> round_stations(Round round,
-						    Round_data const &round_data,
-						    Iteration_data const &iteration_data) const;
+	public: // UnitTests...
+		Distance dummy_distance(Team_id host, Guest_tuple_generator::GuestPair const &guests) const;
+
+		Distance guest_distance(Round_data const &round_data,
+					Team_id host,
+					Guest_tuple_generator::GuestPair const &guests) const;
+
+		Distance host_distance(Round_data const &round_data,
+				       Team_id host) const;
+
+
+	public:
+		Calculation(unsigned int teamcount,
+			    Distance_matrix const &distance_matrix,
+			    Distance max_single_distance);
+
+		unsigned int teamcount() { return _teamcount; }
+		unsigned int solutions() { return _solutions; }
+
+		std::vector<Team_id> round_stations(Round round) const;
+
+		void calculate_distribution();
 
 };
 
-std::ostream& operator<<(std::ostream& os, Calculation::Guest_candidate const& candidate);
 
 }
 
