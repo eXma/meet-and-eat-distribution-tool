@@ -46,80 +46,28 @@ for distance_run in distance_data:
                                      team_map[int(dst)],
                                      way_cost(distance_run[src][dst]))
 
-calculation = pymue.Calculation(cnt, distance_matrix, way_cost(MAX_WAY - 0.5))
+calculation = pymue.Calculation(cnt, distance_matrix, way_cost(MAX_WAY - 0.1))
 
 print "calculate best routes...."
 
-cnt_hosts = cnt / 3
 
-
-
-def generate_plan(round_data, iteration_data):
+def generate_plan(calculation):
     plan = []
     for round_num in range(3):
         round_set = defaultdict(set)
-        for (team_id, station) in enumerate(calculation.round_stations(pymue.Round(round_num), round_data, iteration_data)):
+        for (team_id, station) in enumerate(calculation.round_stations(pymue.Round(round_num))):
             round_set[station].add(team_id)
         plan.append(round_set.values())
     return plan
 
 
 
-i = 0
-best_distance = sys.float_info.max
 best_plan = None
 
 
-
-def deploy_host(host_idx, current_round, iteration_data, round_data):
-    """
-    :param seen_table: dict of set
-    """
-    if host_idx == cnt_hosts:
-        if current_round < 2:
-            new_round = current_round + 1
-            round_data = calculation.next_round_data(round_data, iteration_data)
-            iteration_data.clear_round_data()
-            return deploy_host(0, new_round, iteration_data, round_data)
-        else:
-            global i, best_distance, best_plan
-            i += 1
-            if iteration_data.distance < best_distance:
-                best_plan = generate_plan(round_data, iteration_data)
-                print "new best (%i)" % i, iteration_data.distance, best_plan
-                best_distance = iteration_data.distance
-                calculation.update_best(best_distance)
-            return
-
-    tests = cnt_hosts * 3
-    actual_host = round_data.hosts[host_idx]
-    if current_round > 0:
-        iteration_data.distance = calculation.host_distance(round_data, actual_host) + iteration_data.distance
-        if iteration_data.distance >= best_distance:
-            return
-
-    if current_round > 0:
-        tests = cnt_hosts / 3
-
-    possible_guests = calculation.determine_guest_candidates(round_data, iteration_data, actual_host, tests)
-
-
-    for candidate in possible_guests:
-        if current_round == 0:
-            actual_distance = iteration_data.distance
-        else:
-            actual_distance = candidate.distance
-        guests = candidate.guests
-
-        new_iteration_data = iteration_data.next_iteration(actual_distance, actual_host, guests)
-
-        deploy_host(host_idx + 1, current_round, new_iteration_data, round_data)
-
-
 def test():
-    round_data = calculation.initial_round_data()
-    iteration_data = pymue.IterationData(cnt)
-    deploy_host(0, 0, iteration_data, round_data)
+    calculation.calculate_distribution()
+    best_plan = generate_plan(calculation)
     print ""
     print "======best plan======"
     print "1st round:", best_plan[0]
@@ -129,4 +77,4 @@ def test():
 test()
 print ""
 print "teams:", cnt
-print "solutions that where calculated:", i
+print "solutions that where calculated:", calculation.solutions()
