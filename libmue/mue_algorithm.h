@@ -56,6 +56,10 @@ class Calculation
 				guests(guests),
 				prev_stations(prev_stations)
 			{ }
+
+			Round_data(Round_data &&) = default;
+			Round_data(Round_data const &) = delete;
+			Round_data & operator=(Round_data const &other) = delete;
 		};
 
 	private:
@@ -65,7 +69,7 @@ class Calculation
 			Distance                    distance;
 			Guest_tuple_generator::Used_bits used_guests;
 			std::vector<Team_id>        round_station;
-			std::shared_ptr<Seen_table> seen_table;
+			Seen_table                  seen_table;
 
 			void set_station(Team_id host, Team_id guest1, Team_id guest2)
 			{
@@ -76,7 +80,7 @@ class Calculation
 				used_guests.set(guest1);
 				used_guests.set(guest2);
 
-				seen_table->add_meeting(host, guest1, guest2);
+				seen_table.add_meeting(host, guest1, guest2);
 			}
 
 			Iteration_data(unsigned int teamcount)
@@ -84,36 +88,25 @@ class Calculation
 				distance(0),
 				used_guests(),
 				round_station(teamcount),
-				seen_table(new Seen_table(teamcount))
+				seen_table(teamcount)
 			{ }
 
-			Iteration_data(unsigned int teamcount, Distance distance)
-			:
-				distance(distance),
-				used_guests(),
-				round_station(teamcount),
-				seen_table(new Seen_table(teamcount))
-			{ }
 
-			Iteration_data(Iteration_data const &other)
-			:
-				distance(other.distance),
-				used_guests(other.used_guests),
-				round_station(other.round_station),
-				seen_table(other.seen_table)
-			{}
+			Iteration_data(Iteration_data const &other) = delete;
+			Iteration_data& operator=(Iteration_data const &) = delete;
+			Iteration_data(Iteration_data&& other) = default;
 
 			Iteration_data(Distance new_distance, Iteration_data const &other)
 			:
 				distance(new_distance),
 				used_guests(other.used_guests),
 				round_station(other.round_station),
-				seen_table(new Seen_table(other.seen_table->clone()))
+				seen_table(other.seen_table.clone())
 			{}
 
 			bool seen(Team_id host, Team_id guestA, Team_id guestB) const
 			{
-				return seen_table->seen(host, guestA, guestB);
+				return seen_table.seen(host, guestA, guestB);
 			}
 
 			void clear_round_data()
@@ -140,20 +133,6 @@ class Calculation
 			Guest_candidate(Distance distance, Guest_tuple_generator::GuestPair const &guests)
 			: distance(distance), guests(guests)
 			{ }
-
-			bool operator ==(Guest_candidate const &other)
-			{
-				return other.distance == distance
-				    && other.guests.first == guests.first
-				    && other.guests.second == guests.second;
-			}
-
-			bool operator !=(Guest_candidate const &other)
-			{
-				return ! (*this == other);
-			}
-
-			Guest_candidate() : distance(0), guests(0, 0) { }
 		};
 
 
