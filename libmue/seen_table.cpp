@@ -2,14 +2,6 @@
 
 #include <boost/assert.hpp>
 
-void mue::Seen_table::_update_table(Team_id table_idx, Team_id team_a, Team_id team_b) noexcept {
-	if (_table[table_idx]->generation < _generation) {
-		 Seen_data * new_data = new Seen_data(*_table[table_idx]);
-		 _allocated_lines.push_back(new_data);
-		 _table[table_idx] = new_data;
-	}
-	_table[table_idx]->bitset |= (_id_bitsets[team_a] | _id_bitsets[team_b]);
-}
 
 void mue::Seen_table::add_meeting(Team_id id_1, Team_id id_2, Team_id id_3) noexcept
 {

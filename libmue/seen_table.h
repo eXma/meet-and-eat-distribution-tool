@@ -20,6 +20,7 @@ class Seen_table
 			Seen_bitset bitset;
 
 			Seen_data(int generation) : generation(generation), bitset() { }
+			Seen_data(int generation, Seen_bitset const &bitset) : generation(generation), bitset(bitset) { }
 			Seen_data(Seen_data const &other) : generation(other.generation + 1), bitset(other.bitset) { }
 		};
 
@@ -33,7 +34,12 @@ class Seen_table
 
 		Seen_table(Seen_table const &old, int new_generation) noexcept;
 
-		void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b) noexcept;
+		inline void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b) noexcept
+		{
+			Seen_data * new_data = new Seen_data(generation(), _table[table_idx]->bitset | (_id_bitsets[team_a] | _id_bitsets[team_b]));
+			_allocated_lines.push_back(new_data);
+			_table[table_idx] = new_data;
+		}
 
 	public:
 
