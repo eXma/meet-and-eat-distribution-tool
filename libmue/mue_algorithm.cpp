@@ -149,8 +149,7 @@ void mue::Calculation::print_stations(std::vector<std::vector<Team_id> > const &
 				  <<    ", " << (int) meeting.second[2]
 				  << "])";
 		}
-
-
+		std::cout << "]";
 	}
 	std::cout << "]";
 }
