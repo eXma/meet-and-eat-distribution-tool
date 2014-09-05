@@ -39,9 +39,8 @@ mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &dis
 	std::mt19937 generator(randd());
 	std::uniform_int_distribution<Team_id> random(0, _teams_per_round -1);
 
-
-	for (Team_id team = 0; team < teamcount * 2; ++team)
-		_team_shuffle[team] = random(generator) + (_teams_per_round * SECOND);
+	std::generate(_team_shuffle.begin(), _team_shuffle.end(),
+			[&] () { return random(generator) + (_teams_per_round * SECOND); });
 #endif
 }
 
