@@ -4,7 +4,9 @@
 
 #include "mue_algorithm.h"
 
-mue::Calculation::Calculation(unsigned int teamcount, Distance_matrix const &distance_matrix, Distance max_single_distance)
+mue::Calculation::Calculation(unsigned int           teamcount,
+			      Distance_matrix const &distance_matrix,
+			      Distance               max_single_distance)
 :
 	_teamcount(teamcount),
 	_teams_per_round(teamcount / 3),
@@ -60,7 +62,9 @@ mue::Distance mue::Calculation::dummy_distance(Team_id host, Guest_tuple_generat
 }
 
 
-mue::Distance mue::Calculation::guest_distance(Round_data const &round_data, Team_id host, Guest_tuple_generator::GuestPair const &guests) const
+mue::Distance mue::Calculation::guest_distance(Round_data                       const &round_data,
+					       Team_id                                host,
+					       Guest_tuple_generator::GuestPair const &guests) const
 {
 	return _distance_matrix.lookup(round_data.prev_host(guests.first), host) +
 	       _distance_matrix.lookup(round_data.prev_host(guests.second), host);
@@ -71,7 +75,11 @@ mue::Distance mue::Calculation::host_distance(Round_data const &round_data, Team
 	return _distance_matrix.lookup(round_data.prev_host(host), host);
 }
 
-std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest_candidates(Round_data const &round_data, Iteration_data const &iteration_data, Team_id current_host, size_t slice) const
+std::vector<mue::Calculation::Guest_candidate>
+mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
+					     Iteration_data const &iteration_data,
+					     Team_id               current_host,
+					     size_t                slice) const
 {
 	std::vector<Guest_candidate> candidates;
 	/*
@@ -84,28 +92,40 @@ std::vector<mue::Calculation::Guest_candidate> mue::Calculation::determine_guest
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
 		if (! iteration_data.seen(current_host, guests.first, guests.second)) {
 			if (! round_data.first_round()) {
-				float single_distance = guest_distance(round_data, current_host, guests);
-				float distance = guest_distance(round_data, current_host, guests);
-				if (distance < _best_distance &&  single_distance < _max_single_distance)
-					candidates.emplace_back(iteration_data.distance + guest_distance(round_data, current_host, guests), guests);
+				float single_distance =
+					guest_distance(round_data, current_host, guests);
+				float distance =
+					guest_distance(round_data, current_host, guests);
+
+				if (distance < _best_distance
+				   &&  single_distance < _max_single_distance)
+					candidates.emplace_back(iteration_data.distance
+							+ guest_distance(round_data, current_host, guests),
+							guests);
 			} else {
 				candidates.emplace_back(dummy_distance(current_host, guests), guests);
 			}
 		}
 	}
-	std::sort(candidates.begin(), candidates.end(), [](Guest_candidate const &a, Guest_candidate const &b) { return a.distance < b.distance; });
-	return std::vector<Guest_candidate>(candidates.begin(), candidates.begin() + std::min(candidates.size(), slice));
+	std::sort(candidates.begin(), candidates.end(),
+			[](Guest_candidate const &a, Guest_candidate const &b)
+				{ return a.distance < b.distance; });
+	return std::vector<Guest_candidate>(candidates.begin(),
+					    candidates.begin()
+					    + std::min(candidates.size(), slice));
 }
 
 
 
 mue::Calculation::Round_data mue::Calculation::initial_round_data() const
 {
-	return Round_data(FIRST, _round_hosts[FIRST], _round_guests[FIRST], std::vector<std::vector<Team_id> >());
+	return Round_data(FIRST, _round_hosts[FIRST], _round_guests[FIRST],
+			  std::vector<std::vector<Team_id> >());
 }
 
 
-mue::Calculation::Round_data mue::Calculation::next_round_data(Round_data const &old, Iteration_data const &iteration) const
+mue::Calculation::Round_data mue::Calculation::next_round_data(Round_data const &old,
+							       Iteration_data const &iteration) const
 {
 	BOOST_ASSERT(old.round < 2);
 	Round next_round = static_cast<Round>(old.round + 1);
@@ -173,7 +193,9 @@ void mue::Calculation::report_success(Round_data const &round_data, Iteration_da
 }
 
 
-void mue::Calculation::run_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index) {
+void mue::Calculation::run_distribution(Round_data const &round_data,
+					Iteration_data &iteration, size_t host_index)
+{
 	if (host_index == _teams_per_round) {
 		run_new_round(round_data, iteration);
 		return;
@@ -190,14 +212,17 @@ void mue::Calculation::run_distribution(Round_data const &round_data, Iteration_
 	size_t slices = (round_data.first_round() ? _teams_per_round * 3 : _teams_per_round / 3);
 
 	for (Guest_candidate const &candidate : determine_guest_candidates(round_data, iteration, host, slices)) {
-		Iteration_data new_iteration(iteration.next_iteration((round_data.first_round() ? iteration.distance : candidate.distance),
+		Iteration_data new_iteration(iteration.next_iteration((round_data.first_round()
+								       ? iteration.distance
+								       : candidate.distance),
 					     host, candidate.guests));
 		run_distribution(round_data, new_iteration, host_index + 1);
 	}
 }
 
 
-void mue::Calculation::run_new_round(Round_data const &round_data, Iteration_data &iteration) {
+void mue::Calculation::run_new_round(Round_data const &round_data, Iteration_data &iteration)
+{
 	if (round_data.round == THIRD) {
 		report_success(round_data, iteration);
 		return;
