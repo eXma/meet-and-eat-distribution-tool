@@ -15,6 +15,7 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	_distance_matrix(distance_matrix),
 	_best_distance(std::numeric_limits<float>::max()),
 	_max_single_distance(max_single_distance),
+	_min_single_distance(distance_matrix.min_cost()),
 	_best_stations(3),
 	_solutions(0),
 #ifndef PREDEFINED_RANDOM
@@ -79,6 +80,7 @@ std::vector<mue::Calculation::Guest_candidate>
 mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 					     Iteration_data const &iteration_data,
 					     Team_id               current_host,
+					     size_t         const &host_idx,
 					     size_t                slice) const
 {
 	std::vector<Guest_candidate> candidates;
@@ -97,7 +99,8 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 				float distance = single_distance + iteration_data.distance;
 
 				if (distance < _best_distance
-				   &&  single_distance < _max_single_distance)
+				   &&  single_distance < _max_single_distance
+				   &&  distance + minimum_forecast(round_data.round, host_idx) < _best_distance)
 					candidates.emplace_back(distance, guests);
 			} else {
 				candidates.emplace_back(dummy_distance(current_host, guests), guests);
@@ -208,7 +211,7 @@ void mue::Calculation::run_distribution(Round_data const &round_data,
 
 	size_t slices = (round_data.first_round() ? _teams_per_round * 3 : _teams_per_round / 3);
 
-	for (Guest_candidate const &candidate : determine_guest_candidates(round_data, iteration, host, slices)) {
+	for (Guest_candidate const &candidate : determine_guest_candidates(round_data, iteration, host, host_index, slices)) {
 		Iteration_data new_iteration(iteration.next_iteration((round_data.first_round()
 								       ? iteration.distance
 								       : candidate.distance),
