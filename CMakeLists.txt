@@ -8,16 +8,17 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0") # implicit: -g
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mtune=native") # implicit: -DNDEBUG -O3 
 
 # find python
-set(CMAKE_PYTHON_VERSIONS 2.6)
-find_package(PythonLibs REQUIRED)
+set(CMAKE_PYTHON_VERSIONS 3.4)
+set(Python_ADDITIONAL_VERSIONS 3.4)
+find_package(PythonLibs 3.4 REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 # find boost
 set(BOOST_MULTITHREADED ON)
 set(BOOST_USE_STATIC_LIBS OFF)
-set(BOOST_ADDITIONAL_VERSIONS "1.42" "1.42.0")
+set(BOOST_ADDITIONAL_VERSIONS "1.55" "1.55.0")
 
-find_package(Boost 1.40.0 REQUIRED COMPONENTS python)
+find_package(Boost 1.40.0 REQUIRED COMPONENTS python-py34)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # subpackages

@@ -15,7 +15,7 @@ def way_cost(way_length):
     return sys.float_info.max
 
 
-print "read data...."
+print("read data....")
 
 pref = ""
 if len(sys.argv):
@@ -27,7 +27,7 @@ with open("teams%s.json" % pref, "r") as f:
 with open("distances%s.json" % pref, "r") as f:
     distance_data = json.load(f)
 
-print "map teams...."
+print("map teams....")
 team_map = dict()
 team_map_reverse = dict()
 for (idx, team) in enumerate(team_data):
@@ -37,7 +37,7 @@ for (idx, team) in enumerate(team_data):
 cnt = len(team_data)
 teams = sorted(team_map.values())
 
-print "build distance matrix..."
+print("build distance matrix...")
 distance_matrix = pymue.DistanceMatrix(cnt)
 for distance_run in distance_data:
     for src in distance_run:
@@ -48,7 +48,7 @@ for distance_run in distance_data:
 
 calculation = pymue.Calculation(cnt, distance_matrix, way_cost(MAX_WAY - 0.1))
 
-print "calculate best routes...."
+print("calculate best routes....")
 
 
 def generate_plan(calculation):
@@ -68,13 +68,13 @@ best_plan = None
 def test():
     calculation.calculate_distribution()
     best_plan = generate_plan(calculation)
-    print ""
-    print "======best plan======"
-    print "1st round:", best_plan[0]
-    print "2nd round:", best_plan[1]
-    print "3rd round:", best_plan[2]
+    print("")
+    print("======best plan======")
+    print("1st round:", best_plan[0])
+    print("2nd round:", best_plan[1])
+    print("3rd round:", best_plan[2])
 
 test()
-print ""
-print "teams:", cnt
-print "solutions that where calculated:", calculation.solutions()
+print("")
+print("teams:", cnt)
+print("solutions that where calculated:", calculation.solutions())

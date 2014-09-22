@@ -11,7 +11,9 @@ set_target_properties(pymue PROPERTIES
   INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
 
 # link dependencies
+target_link_libraries(pymue ${PythonLibs_LIBRARIES})
 target_link_libraries(pymue ${Boost_PYTHON_LIBRARY})
+target_link_libraries(pymue ${Boost_LIBRARIES})
 target_link_libraries(pymue libmue)
 
 # install the shared object
