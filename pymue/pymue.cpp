@@ -14,6 +14,7 @@ BOOST_PYTHON_MODULE (_pymue)
 
 	class_<mue::Distance_matrix>("DistanceMatrix", init<unsigned int>())
 		.def("set_cost", &mue::Distance_matrix::set_cost)
+		.def("min_cost", &mue::Distance_matrix::min_cost)
 		.def("lookup", &mue::Distance_matrix::lookup);
 
 	class_<std::vector<mue::Team_id> >("TeamVector")
