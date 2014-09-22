@@ -186,7 +186,7 @@ void mue::Calculation::report_success(Round_data const &round_data, Iteration_da
 	}
 	print_stations(_best_stations);
 	std::cout << std::endl;
-
+	std::cout.flush();
 }
 
 
