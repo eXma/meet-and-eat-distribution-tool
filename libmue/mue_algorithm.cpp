@@ -94,14 +94,11 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 			if (! round_data.first_round()) {
 				float single_distance =
 					guest_distance(round_data, current_host, guests);
-				float distance =
-					guest_distance(round_data, current_host, guests);
+				float distance = single_distance + iteration_data.distance;
 
 				if (distance < _best_distance
 				   &&  single_distance < _max_single_distance)
-					candidates.emplace_back(iteration_data.distance
-							+ guest_distance(round_data, current_host, guests),
-							guests);
+					candidates.emplace_back(distance, guests);
 			} else {
 				candidates.emplace_back(dummy_distance(current_host, guests), guests);
 			}
