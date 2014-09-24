@@ -15,7 +15,7 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	_distance_matrix(distance_matrix),
 	_best_distance(std::numeric_limits<float>::max()),
 	_max_single_distance(max_single_distance),
-	_min_single_distance(distance_matrix.min_cost()),
+	_forecast(distance_matrix),
 	_best_stations(3),
 	_solutions(0),
 #ifndef PREDEFINED_RANDOM
@@ -98,9 +98,10 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 					guest_distance(round_data, current_host, guests);
 				float distance = single_distance + iteration_data.distance;
 
-				if (distance < _best_distance
-				   &&  single_distance < _max_single_distance
-				   &&  distance + minimum_forecast(round_data.round, host_idx) < _best_distance)
+				if (single_distance < _max_single_distance
+				   &&  distance + (round_data.round == SECOND
+						  ? _forecast.first_move(host_idx)
+						  : _forecast.second_move(host_idx)))
 					candidates.emplace_back(distance, guests);
 			} else {
 				candidates.emplace_back(dummy_distance(current_host, guests), guests);

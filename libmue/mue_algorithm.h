@@ -144,7 +144,7 @@ class Calculation
 		Distance_matrix                     const _distance_matrix;
 		Distance                                  _best_distance;
 		Distance                            const _max_single_distance;
-		Distance                            const _min_single_distance;
+		Distance_forecast                   const _forecast;
 		std::vector<std::vector<Team_id> >        _best_stations;
 		size_t                                    _solutions;
 
@@ -186,12 +186,6 @@ class Calculation
 
 		Round_data next_round_data(Round_data const &round_data,
 					   Iteration_data const &data) const;
-
-		Distance minimum_forecast(Round const &round, Team_id const &host_id) const
-		{
-			return (THIRD - round) * _teamcount * _min_single_distance
-				+ (_teamcount - (host_id + 1) * 3) * _min_single_distance;
-		}
 
 	public: // UnitTests...
 		Distance dummy_distance(Team_id host, Guest_tuple_generator::GuestPair const &guests) const;
