@@ -1,7 +1,6 @@
 #ifndef MUE_ALGORITHM_H
 #define MUE_ALGORITHM_H
 
-#include <random>
 #include <map>
 #include <cstdint>
 #include <memory>
@@ -17,8 +16,6 @@
 #include "seen_table.h"
 #include "firstround_select.h"
 
-
-#define PREDEFINED_RANDOM
 
 namespace mue {
 
@@ -150,12 +147,6 @@ class Calculation
 		size_t                                    _solutions;
 		Firstround_team_selection           const _firstround_selection;
 
-#ifndef PREDEFINED_RANDOM
-		mutable std::uniform_int_distribution<Team_id> _team_round_random;
-		mutable std::mt19937 _random_generator;
-#else
-		std::vector<Team_id> _team_shuffle;
-#endif
 
 		bool _is_round_host(Team_id team, Round round) const
 		{
@@ -163,12 +154,6 @@ class Calculation
 				&& (_teams_per_round * (round + 1) >  team);
 		}
 
-#ifndef PREDEFINED_RANDOM
-		Team_id _random_host(Round round) const
-		{
-			return _team_round_random(_random_generator) + (_teams_per_round * round);
-		}
-#endif
 
 		bool _distance_is_better(Distance new_dist) const  { return _best_distance > new_dist; }
 		void run_new_round(Round_data const &round_data, Iteration_data &iteration);
