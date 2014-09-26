@@ -15,6 +15,7 @@
 #include "distances.h"
 #include "config.h"
 #include "seen_table.h"
+#include "firstround_select.h"
 
 
 #define PREDEFINED_RANDOM
@@ -147,6 +148,7 @@ class Calculation
 		Distance_forecast                   const _forecast;
 		std::vector<std::vector<Team_id> >        _best_stations;
 		size_t                                    _solutions;
+		Firstround_team_selection           const _firstround_selection;
 
 #ifndef PREDEFINED_RANDOM
 		mutable std::uniform_int_distribution<Team_id> _team_round_random;
@@ -171,9 +173,13 @@ class Calculation
 		bool _distance_is_better(Distance new_dist) const  { return _best_distance > new_dist; }
 		void run_new_round(Round_data const &round_data, Iteration_data &iteration);
 		void run_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
+		void run_firstround_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
 		void report_success(Round_data const &round_data, Iteration_data const &iteration);
 		void print_stations(std::vector<std::vector<Team_id> > const &stations);
 
+		std::vector<Guest_candidate> firstround_guest_candidates(Iteration_data const &iteration_data,
+								         Team_id current_host,
+									 size_t slice) const;
 		std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data,
 									Iteration_data const &iteration_data,
 									Team_id current_host,

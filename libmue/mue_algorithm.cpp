@@ -18,6 +18,7 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	_forecast(distance_matrix),
 	_best_stations(3),
 	_solutions(0),
+	_firstround_selection(distance_matrix),
 #ifndef PREDEFINED_RANDOM
 	_team_round_random(0, _teams_per_round -1),
 	_random_generator(std::random_device()())
@@ -83,6 +84,7 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 					     size_t         const &host_idx,
 					     size_t                slice) const
 {
+	BOOST_ASSERT(! round_data.first_round());
 	std::vector<Guest_candidate> candidates;
 	/*
 	 * 63 teams have 42 guests (2/3)
@@ -93,19 +95,15 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 	Guest_tuple_generator generator(round_data.guests, iteration_data.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
 		if (! iteration_data.seen(current_host, guests.first, guests.second)) {
-			if (! round_data.first_round()) {
-				float single_distance =
-					guest_distance(round_data, current_host, guests);
-				float distance = single_distance + iteration_data.distance;
+			float single_distance =
+				guest_distance(round_data, current_host, guests);
+			float distance = single_distance + iteration_data.distance;
 
-				if (single_distance < _max_single_distance
-				   &&  distance + (round_data.round == SECOND
-						  ? _forecast.first_move(host_idx)
-						  : _forecast.second_move(host_idx)))
-					candidates.emplace_back(distance, guests);
-			} else {
-				candidates.emplace_back(dummy_distance(current_host, guests), guests);
-			}
+			if (single_distance < _max_single_distance
+			   &&  distance + (round_data.round == SECOND
+					  ? _forecast.first_move(host_idx)
+					  : _forecast.second_move(host_idx)))
+				candidates.emplace_back(distance, guests);
 		}
 	}
 	std::sort(candidates.begin(), candidates.end(),
@@ -116,6 +114,29 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 					    + std::min(candidates.size(), slice));
 }
 
+std::vector<mue::Calculation::Guest_candidate>
+mue::Calculation::firstround_guest_candidates(Iteration_data const &iteration_data,
+				              Team_id               current_host,
+				              size_t                slice) const
+{
+	std::vector<Guest_candidate> candidates;
+	/*
+	 * 63 teams have 42 guests (2/3)
+	 * (math.factorial(42) / math.factorial(42-2)) / 2 = 861
+	 * So for guests of 63 Teams 900 elements are enough.
+	 */
+	candidates.reserve(900);
+	Guest_tuple_generator generator(_firstround_selection.for_host(current_host),
+			                iteration_data.used_guests);
+	for (Guest_tuple_generator::GuestPair const &guests : generator) {
+		if (! iteration_data.seen(current_host, guests.first, guests.second)) {
+			candidates.emplace_back(0, guests);
+		}
+	}
+	return std::vector<Guest_candidate>(candidates.begin(),
+					    candidates.begin()
+					    + std::min(candidates.size(), slice));
+}
 
 
 mue::Calculation::Round_data mue::Calculation::initial_round_data() const
@@ -194,8 +215,8 @@ void mue::Calculation::report_success(Round_data const &round_data, Iteration_da
 }
 
 
-void mue::Calculation::run_distribution(Round_data const &round_data,
-					Iteration_data &iteration, size_t host_index)
+void mue::Calculation::run_firstround_distribution(Round_data const &round_data,
+						   Iteration_data &iteration, size_t host_index)
 {
 	if (host_index == _teams_per_round) {
 		run_new_round(round_data, iteration);
@@ -204,18 +225,35 @@ void mue::Calculation::run_distribution(Round_data const &round_data,
 
 	Team_id host = round_data.hosts[host_index];
 
-	if (! round_data.first_round()) {
+	size_t slices = _teams_per_round * 3;
+
+	for (Guest_candidate const &candidate : firstround_guest_candidates(iteration, host, slices)) {
+		Iteration_data new_iteration(iteration.next_iteration((iteration.distance),
+					     host, candidate.guests));
+		run_firstround_distribution(round_data, new_iteration, host_index + 1);
+	}
+}
+
+
+void mue::Calculation::run_distribution(Round_data const &round_data,
+					Iteration_data &iteration, size_t host_index)
+{
+	BOOST_ASSERT(! round_data.first_round());
+	if (host_index == _teams_per_round) {
+		run_new_round(round_data, iteration);
+		return;
+	}
+
+	Team_id host = round_data.hosts[host_index];
+
 		iteration.distance += host_distance(round_data, host);
 		if (!_distance_is_better(iteration.distance))
 			return;
-	}
 
-	size_t slices = (round_data.first_round() ? _teams_per_round * 3 : _teams_per_round / 3);
+	size_t slices = _teams_per_round / 3;
 
 	for (Guest_candidate const &candidate : determine_guest_candidates(round_data, iteration, host, host_index, slices)) {
-		Iteration_data new_iteration(iteration.next_iteration((round_data.first_round()
-								       ? iteration.distance
-								       : candidate.distance),
+		Iteration_data new_iteration(iteration.next_iteration((candidate.distance),
 					     host, candidate.guests));
 		run_distribution(round_data, new_iteration, host_index + 1);
 	}
@@ -241,6 +279,6 @@ void mue::Calculation::calculate_distribution()
 	Round_data round_data(initial_round_data());
 	Iteration_data iteration_data(_teamcount);
 
-	run_distribution(round_data, iteration_data, 0);
+	run_firstround_distribution(round_data, iteration_data, 0);
 
 }
