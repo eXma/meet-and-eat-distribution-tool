@@ -15,25 +15,6 @@ namespace mue {
 	class Firstround_team_selection
 	{
 		private:
-			struct Candidate
-			{
-				Distance distance;
-				Team_id team;
-
-				Candidate(Distance const &distance, Team_id const &team)
-				: distance(distance), team(team)
-				{ }
-
-				bool operator <(Candidate const &other)
-				{ return distance < other.distance; }
-
-				bool operator >(Candidate const &other)
-				{ return distance > other.distance; }
-
-				bool operator ==(Candidate const &other)
-				{ return team == other.team; }
-			};
-
 			unsigned int _teamcount;
 			std::vector<std::vector<Team_id> > _candidates;
 

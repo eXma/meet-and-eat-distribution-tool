@@ -2,6 +2,30 @@
 
 #include "firstround_select.h"
 
+
+namespace mue {
+
+struct Candidate
+{
+	Distance distance;
+	Team_id team;
+
+	Candidate(Distance const &distance, Team_id const &team)
+	: distance(distance), team(team)
+	{ }
+
+	bool operator <(Candidate const &other)
+	{ return distance < other.distance; }
+
+	bool operator >(Candidate const &other)
+	{ return distance > other.distance; }
+
+	bool operator ==(Candidate const &other)
+	{ return team == other.team; }
+};
+
+}
+
 mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const &distance_matrix,
 							  unsigned int slice)
 :
