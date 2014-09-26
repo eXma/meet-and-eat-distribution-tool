@@ -5,14 +5,14 @@
 
 #include "firstround_select.h"
 #include "config.h"
+#include "guest_tuple_iterator.h"
 
 
 class TestFirstroundTeamSelection : public CxxTest::TestSuite
 {
-	public:
-		void testDistanceSorting(void)
+	private:
+		mue::Distance_matrix make_matrix()
 		{
-			std::cout << std::endl;
 			std::vector<std::vector<mue::Distance> > distances = {
 				{0, 0, 0, 0, 1, 6, 11, 16, 0, 0, 0, 0},
 				{0, 0, 0, 0, 1, 6, 11, 16, 0, 0, 0, 0},
@@ -34,8 +34,12 @@ class TestFirstroundTeamSelection : public CxxTest::TestSuite
 					matrix.set_cost(src, dst, distances[src][dst]);
 				}
 			}
-
-			mue::Firstround_team_selection selection(matrix);
+			return matrix;
+		}
+	public:
+		void testDistanceSorting(void)
+		{
+			mue::Firstround_team_selection selection(make_matrix());
 			std::vector<mue::Team_id> sorted(selection.for_host(0));
 			std::vector<mue::Team_id> reference = {4, 8, 9, 10, 11, 5, 6, 7};
 
@@ -44,6 +48,27 @@ class TestFirstroundTeamSelection : public CxxTest::TestSuite
 			for (size_t i = 0; i < reference.size(); ++i)
 			{
 				TS_ASSERT_EQUALS(sorted[i], reference[i]);
+			}
+		}
+
+		void testSortedGuestTupleGeneration(void)
+		{
+			mue::Firstround_team_selection selection(make_matrix(), 4);
+			std::vector<mue::Team_id> sorted(selection.for_host(0));
+
+			mue::Guest_tuple_generator generator(sorted, std::bitset<MAX_TEAMS>(0x00));
+
+			using guests = mue::Guest_tuple_generator::GuestPair;
+
+			std::vector<guests> reference = { guests(4, 8), guests(4, 9), guests(4, 10),
+							  guests(8, 9), guests(8, 10),
+							  guests(9, 10)};
+			auto it = reference.begin();
+			for (guests const &g : generator) {
+				TS_ASSERT(it != reference.end());
+				TS_ASSERT_EQUALS(it->first, g.first);
+				TS_ASSERT_EQUALS(it->second, g.second);
+				++it;
 			}
 		}
 };
