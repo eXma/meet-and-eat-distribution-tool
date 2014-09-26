@@ -4,6 +4,7 @@
 #include "mue_algorithm.h"
 #include "teams.h"
 #include "distances.h"
+#include "firstround_select.h"
 
 #include <vector>
 
@@ -16,6 +17,8 @@ BOOST_PYTHON_MODULE (_pymue)
 		.def("set_cost", &mue::Distance_matrix::set_cost)
 		.def("min_cost", &mue::Distance_matrix::min_cost)
 		.def("lookup", &mue::Distance_matrix::lookup);
+
+	class_<mue::Firstround_team_selection>("FirstroundSelection", init<mue::Distance_matrix, unsigned int>());
 
 	class_<std::vector<mue::Team_id> >("TeamVector")
 		.def(vector_indexing_suite<std::vector<mue::Team_id> >());
