@@ -37,7 +37,7 @@ mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const 
 					                      second_candidates.end());
 
 			// Ensure the firststep is cheaper than cheapest secindstep for this first
-			firststep_distance += std::max(min_candidate->distance - 0.01, 0.0);
+			firststep_distance = std::max(min_candidate->distance - 0.01, 0.0);
 			guest_candidates.emplace_back(firststep_distance, firststep_guest);
 
 			guest_candidates.insert(guest_candidates.end(),
@@ -58,6 +58,8 @@ mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const 
 		// Erase "longer" duplicates
 		guest_candidates.erase(std::unique(guest_candidates.begin(), guest_candidates.end()),
 				       guest_candidates.end());
+
+		std::sort(guest_candidates.begin(), guest_candidates.end());
 
 		// Put it into the destination container
 		if (slice == 0)
