@@ -22,7 +22,7 @@ namespace mue {
 			Firstround_team_selection(Distance_matrix const &distance_matrix,
 					          unsigned int slice = 0);
 
-			std::vector<Team_id> for_host(Team_id const &host)
+			std::vector<Team_id> for_host(Team_id const &host) const
 			{
 				BOOST_ASSERT(host < _teamcount / 3);
 				return _candidates[host];
