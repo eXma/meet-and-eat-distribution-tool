@@ -86,8 +86,7 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 
 std::vector<mue::Calculation::Guest_candidate>
 mue::Calculation::firstround_guest_candidates(Iteration_data const &iteration_data,
-				              Team_id               current_host,
-				              size_t                slice) const
+				              Team_id               current_host) const
 {
 	std::vector<Guest_candidate> candidates;
 	/*
@@ -103,9 +102,7 @@ mue::Calculation::firstround_guest_candidates(Iteration_data const &iteration_da
 			candidates.emplace_back(0, guests);
 		}
 	}
-	return std::vector<Guest_candidate>(candidates.begin(),
-					    candidates.begin()
-					    + std::min(candidates.size(), slice));
+	return candidates;
 }
 
 
@@ -195,9 +192,7 @@ void mue::Calculation::run_firstround_distribution(Round_data const &round_data,
 
 	Team_id host = round_data.hosts[host_index];
 
-	size_t slices = _teams_per_round * 3;
-
-	for (Guest_candidate const &candidate : firstround_guest_candidates(iteration, host, slices)) {
+	for (Guest_candidate const &candidate : firstround_guest_candidates(iteration, host)) {
 		Iteration_data new_iteration(iteration.next_iteration((iteration.distance),
 					     host, candidate.guests));
 		run_firstround_distribution(round_data, new_iteration, host_index + 1);

@@ -163,8 +163,7 @@ class Calculation
 		void print_stations(std::vector<std::vector<Team_id> > const &stations);
 
 		std::vector<Guest_candidate> firstround_guest_candidates(Iteration_data const &iteration_data,
-								         Team_id current_host,
-									 size_t slice) const;
+								         Team_id current_host) const;
 		std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data,
 									Iteration_data const &iteration_data,
 									Team_id current_host,
