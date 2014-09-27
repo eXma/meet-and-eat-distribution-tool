@@ -211,9 +211,9 @@ void mue::Calculation::run_distribution(Round_data const &round_data,
 
 	Team_id host = round_data.hosts[host_index];
 
-		iteration.distance += host_distance(round_data, host);
-		if (!_distance_is_better(iteration.distance))
-			return;
+	iteration.distance += host_distance(round_data, host);
+	if (!_distance_is_better(iteration.distance))
+		return;
 
 	size_t slices = _teams_per_round / 3;
 
