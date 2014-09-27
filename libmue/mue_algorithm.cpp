@@ -70,9 +70,9 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 			float distance = single_distance + iteration_data.distance;
 
 			if (single_distance < _max_single_distance
-			   &&  distance + (round_data.round == SECOND
-					  ? _forecast.first_move(host_idx)
-					  : _forecast.second_move(host_idx)))
+			   &&  _distance_is_better(distance + (round_data.round == SECOND
+							       ? _forecast.first_move(host_idx)
+							       : _forecast.second_move(host_idx))))
 				candidates.emplace_back(distance, guests);
 		}
 	}
