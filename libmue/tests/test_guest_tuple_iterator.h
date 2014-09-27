@@ -88,6 +88,19 @@ class TestGuestTupleGenerator : public CxxTest::TestSuite
 				TS_ASSERT(used.find(pair.second) == used.end());
 			}
 		}
+
+		void testEmptyGuests(void)
+		{
+			int i(0);
+			std::vector<mue::Team_id> team_ids;
+			std::unordered_set<mue::Team_id> used;
+			mue::Guest_tuple_generator gen(team_ids, used);
+			for (mue::Guest_tuple_generator::GuestPair const &pair : gen) {
+				(void) pair;
+				++i;
+			}
+			TS_ASSERT_EQUALS(i, 0);
+		}
 };
 
 #endif
