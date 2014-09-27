@@ -77,7 +77,12 @@ class Guest_tuple_generator
 					return tmp;
 				}
 
-				inline bool operator== (Iterator const& other) const { return (_guest_a == other._guest_a) && (_guest_b == other._guest_b); }
+				inline bool operator== (Iterator const& other) const
+				{
+					if (other._guest_a == _end && _guest_b == _end)
+						return true;
+					return (_guest_a == other._guest_a) && (_guest_b == other._guest_b);
+				}
 				inline bool operator!= (Iterator const& other) const { return !(*this == other); }
 
 				inline const GuestPair operator* ()
