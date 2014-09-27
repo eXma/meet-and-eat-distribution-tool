@@ -84,27 +84,6 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 					    + std::min(candidates.size(), slice));
 }
 
-std::vector<mue::Calculation::Guest_candidate>
-mue::Calculation::firstround_guest_candidates(Iteration_data const &iteration_data,
-				              Team_id               current_host) const
-{
-	std::vector<Guest_candidate> candidates;
-	/*
-	 * 63 teams have 42 guests (2/3)
-	 * (math.factorial(42) / math.factorial(42-2)) / 2 = 861
-	 * So for guests of 63 Teams 900 elements are enough.
-	 */
-	candidates.reserve(900);
-	Guest_tuple_generator generator(_firstround_selection.for_host(current_host),
-			                iteration_data.used_guests);
-	for (Guest_tuple_generator::GuestPair const &guests : generator) {
-		if (! iteration_data.seen(current_host, guests.first, guests.second)) {
-			candidates.emplace_back(0, guests);
-		}
-	}
-	return candidates;
-}
-
 
 mue::Calculation::Round_data mue::Calculation::initial_round_data() const
 {
@@ -192,10 +171,14 @@ void mue::Calculation::run_firstround_distribution(Round_data const &round_data,
 
 	Team_id host = round_data.hosts[host_index];
 
-	for (Guest_candidate const &candidate : firstround_guest_candidates(iteration, host)) {
-		Iteration_data new_iteration(iteration.next_iteration((iteration.distance),
-					     host, candidate.guests));
-		run_firstround_distribution(round_data, new_iteration, host_index + 1);
+	Guest_tuple_generator generator(_firstround_selection.for_host(host),
+			                iteration.used_guests);
+	for (Guest_tuple_generator::GuestPair const &guests : generator) {
+		if (! iteration.seen(host, guests.first, guests.second)) {
+			Iteration_data new_iteration(iteration.next_iteration((0),
+						     host, guests));
+			run_firstround_distribution(round_data, new_iteration, host_index + 1);
+		}
 	}
 }
 
