@@ -39,7 +39,7 @@ class TestFirstroundTeamSelection : public CxxTest::TestSuite
 	public:
 		void testDistanceSorting(void)
 		{
-			mue::Firstround_team_selection selection(make_matrix());
+			mue::Firstround_team_selection selection(make_matrix(), 10000000);
 			std::vector<mue::Team_id> sorted(selection.for_host(0));
 			std::vector<mue::Team_id> reference = {4, 8, 9, 10, 11, 5, 6, 7};
 
@@ -53,7 +53,7 @@ class TestFirstroundTeamSelection : public CxxTest::TestSuite
 
 		void testSortedGuestTupleGeneration(void)
 		{
-			mue::Firstround_team_selection selection(make_matrix(), 4);
+			mue::Firstround_team_selection selection(make_matrix(), 1000000, 4);
 			std::vector<mue::Team_id> sorted(selection.for_host(0));
 
 			mue::Guest_tuple_generator generator(sorted, std::bitset<MAX_TEAMS>(0x00));

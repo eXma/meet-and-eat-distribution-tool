@@ -18,7 +18,7 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	_forecast(distance_matrix),
 	_best_stations(3),
 	_solutions(0),
-	_firstround_selection(distance_matrix, _teams_per_round * 2 -2 )
+	_firstround_selection(distance_matrix, _max_single_distance, _teams_per_round * 2 -2 )
 {
 	BOOST_ASSERT(_teamcount <= MAX_TEAMS);
 	BOOST_ASSERT(_teamcount / 3 == float(_teamcount / 3));

@@ -20,7 +20,8 @@ namespace mue {
 
 		public:
 			Firstround_team_selection(Distance_matrix const &distance_matrix,
-					          unsigned int slice = 0);
+						  Distance max_distance,
+					          size_t slice = 0);
 
 			std::vector<Team_id> for_host(Team_id const &host) const
 			{
