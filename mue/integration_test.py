@@ -69,7 +69,7 @@ best_plan = None
 
 
 def test():
-    calculation.calculate_distribution()
+    pymue.calculate(calculation)
     best_plan = generate_plan(calculation)
     print("")
     print("======best plan======")
