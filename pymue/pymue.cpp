@@ -1,3 +1,5 @@
+#include <vector>
+
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
@@ -6,7 +8,16 @@
 #include "distances.h"
 #include "firstround_select.h"
 
-#include <vector>
+#include "scoped_gil.h"
+
+
+namespace pymue {
+	void calculate_without_gil(mue::Calculation &calculation)
+	{
+		ScopedGILRelease gilRelease;
+		calculation.calculate_distribution();
+	}
+}
 
 
 BOOST_PYTHON_MODULE (_pymue)
@@ -32,4 +43,6 @@ BOOST_PYTHON_MODULE (_pymue)
 		.value("FIRST", mue::Calculation::FIRST)
 		.value("SECOND", mue::Calculation::SECOND)
 		.value("THIRD", mue::Calculation::THIRD);
+
+	def("calculate", pymue::calculate_without_gil);
 }
