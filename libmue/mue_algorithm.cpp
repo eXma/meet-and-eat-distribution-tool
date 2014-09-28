@@ -162,7 +162,8 @@ void mue::Calculation::report_success(Round_data const &round_data, Iteration_da
 
 
 void mue::Calculation::run_firstround_distribution(Round_data const &round_data,
-						   Iteration_data &iteration, size_t host_index)
+						   Iteration_data &iteration,
+						   size_t host_index)
 {
 	if (host_index == _teams_per_round) {
 		run_new_round(round_data, iteration);
@@ -174,11 +175,9 @@ void mue::Calculation::run_firstround_distribution(Round_data const &round_data,
 	Guest_tuple_generator generator(_firstround_selection.for_host(host),
 			                iteration.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
-		if (! iteration.seen(host, guests.first, guests.second)) {
-			Iteration_data new_iteration(iteration.next_iteration((0),
-						     host, guests));
-			run_firstround_distribution(round_data, new_iteration, host_index + 1);
-		}
+		Iteration_data new_iteration(iteration.next_iteration((0),
+					     host, guests));
+		run_firstround_distribution(round_data, new_iteration, host_index + 1);
 	}
 }
 
