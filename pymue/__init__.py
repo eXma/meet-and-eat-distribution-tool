@@ -1,1 +1,1 @@
-from ._pymue import DistanceMatrix, Calculation, Round
+from ._pymue import DistanceMatrix, Calculation, Round, calculate
