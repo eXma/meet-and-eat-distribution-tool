@@ -157,16 +157,18 @@ class Calculation
 
 		bool _distance_is_better(Distance new_dist) const  { return _best_distance > new_dist; }
 		void run_new_round(Round_data const &round_data, Iteration_data &iteration);
-		void run_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
+		void run_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index, std::vector<std::vector<Guest_candidate>>& candidate_pool);
+		void run_firstround_distribution_seq(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
 		void run_firstround_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
 		void report_success(Round_data const &round_data, Iteration_data const &iteration);
 		void print_stations(std::vector<std::vector<Team_id> > const &stations);
 
-		std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data,
+		std::vector<Guest_candidate>& determine_guest_candidates(Round_data const &round_data,
 									Iteration_data const &iteration_data,
 									Team_id current_host,
 									size_t const &host_idx,
-									size_t slice) const;
+									size_t slice,
+									std::vector<Guest_candidate>& candidates) const;
 
 		void update_best(float best) { _best_distance = best; }
 
