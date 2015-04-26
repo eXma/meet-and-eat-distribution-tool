@@ -1,6 +1,7 @@
 #include "seen_table.h"
 
 #include <boost/assert.hpp>
+#include <string.h>
 
 
 void mue::Seen_table::add_meeting(Team_id id_1, Team_id id_2, Team_id id_3) noexcept
@@ -14,32 +15,30 @@ void mue::Seen_table::add_meeting(Team_id id_1, Team_id id_2, Team_id id_3) noex
 mue::Seen_table::Seen_table(Seen_table const &old, int new_generation) noexcept
 :
 	_generation(new_generation),
-	_max_teams(old._max_teams),
-	_table(old._table)
-{ }
+	_max_teams(old._max_teams)
+{
+	memcpy(_table, old._table, sizeof(*_table) * old._max_teams);
+}
 
 
 mue::Seen_table::Seen_table(Seen_table&& other) noexcept
 :
 	_generation(std::move(other._generation)),
-	_max_teams(std::move(other._max_teams)),
-	_table(std::move(other._table)),
-	_allocated_lines(std::move(other._allocated_lines))
-{ }
+	_max_teams(std::move(other._max_teams))
+{
+	memcpy(_table, other._table, sizeof(*_table) * other._max_teams);
+}
 
 
 mue::Seen_table::Seen_table(int max_teams) noexcept
 :
 	_generation(0),
-	_max_teams(max_teams),
-	_table(max_teams, 0)
+	_max_teams(max_teams)
 {
 	BOOST_ASSERT(max_teams <= MAX_TEAMS);
 
 	for (int i = 0; i < max_teams; ++i) {
-		Seen_data * new_data = new Seen_data(0);
-		_allocated_lines.push_back(new_data);
-		_table[i] = new_data;
+		_table[i] = &_seen_pool[i];
 	}
 
 	if (_id_bitsets.empty()) {
@@ -51,9 +50,6 @@ mue::Seen_table::Seen_table(int max_teams) noexcept
 
 
 mue::Seen_table::~Seen_table()
-{
-	for (Seen_data * data : _allocated_lines)
-		delete data;
-}
+{ }
 
 std::vector<mue::Seen_table::Seen_data::Seen_bitset> mue::Seen_table::_id_bitsets;
