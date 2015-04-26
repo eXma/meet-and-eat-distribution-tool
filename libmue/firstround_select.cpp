@@ -14,13 +14,13 @@ struct Candidate
 	: distance(distance), team(team)
 	{ }
 
-	bool operator <(Candidate const &other)
+	bool operator <(Candidate const &other) const
 	{ return distance < other.distance; }
 
-	bool operator >(Candidate const &other)
+	bool operator >(Candidate const &other) const
 	{ return distance > other.distance; }
 
-	bool operator ==(Candidate const &other)
+	bool operator ==(Candidate const &other) const
 	{ return team == other.team; }
 };
 
