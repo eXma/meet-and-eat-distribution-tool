@@ -16,9 +16,10 @@ class Seen_table
 		struct Seen_data {
 			typedef std::bitset<MAX_TEAMS> Seen_bitset;
 
-			int const generation;
+			int generation;
 			Seen_bitset bitset;
 
+			Seen_data() : generation(0), bitset() {}
 			Seen_data(int generation) : generation(generation), bitset() { }
 			Seen_data(int generation, Seen_bitset const &bitset) : generation(generation), bitset(bitset) { }
 			Seen_data(Seen_data const &other) : generation(other.generation + 1), bitset(other.bitset) { }
@@ -29,15 +30,16 @@ class Seen_table
 		int const _generation;
 		int const _max_teams;
 
-		std::vector<Seen_data *> _table;
-		std::list<Seen_data *> _allocated_lines;
+		Seen_data _seen_pool[MAX_TEAMS];
+		Seen_data *_table[MAX_TEAMS]; // this works since we work recursively, the instances we copy the pointers from stay alive.
 
 		Seen_table(Seen_table const &old, int new_generation) noexcept;
 
 		inline void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b) noexcept
 		{
-			Seen_data * new_data = new Seen_data(generation(), _table[table_idx]->bitset | (_id_bitsets[team_a] | _id_bitsets[team_b]));
-			_allocated_lines.push_back(new_data);
+			Seen_data *new_data = &_seen_pool[table_idx];
+			new_data->bitset = _table[table_idx]->bitset | (_id_bitsets[team_a] | _id_bitsets[team_b]);
+			new_data->generation = generation();
 			_table[table_idx] = new_data;
 		}
 
