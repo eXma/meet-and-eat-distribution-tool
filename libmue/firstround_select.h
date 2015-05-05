@@ -20,6 +20,9 @@ namespace mue {
 			const Distance _max_distance;
 			std::vector<std::vector<Team_id> > _candidates;
 
+			void _sort_filter_teams(Distance_matrix const &distance_matrix,
+						size_t slice);
+
 		public:
 			Firstround_team_selection(Distance_matrix const &distance_matrix,
 						  Distance max_distance,

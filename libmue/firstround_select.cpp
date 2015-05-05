@@ -27,19 +27,11 @@ struct Candidate
 
 }
 
-mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const &distance_matrix,
-							  Distance max_distance,
-							  size_t slice)
-:
-	_teamcount(distance_matrix.teamcount()),
-	_round_teams(_teamcount / 3),
-	// ToDo: review this
-	_max_distance(302500),
-	_candidates(_teamcount / 3)
-{
-	(void)max_distance;
-	BOOST_ASSERT(slice < _round_teams * 2);
 
+void
+mue::Firstround_team_selection::_sort_filter_teams(Distance_matrix const &distance_matrix,
+						   size_t slice)
+{
 	for (Team_id host_team = 0; host_team < _round_teams; ++host_team) {
 		std::vector<Candidate> guest_candidates;
 		guest_candidates.reserve(_round_teams * _round_teams);
@@ -107,6 +99,24 @@ mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const 
 					{ _candidates[host_team].emplace_back(c.team); });
 
 	}
+
+}
+
+
+mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const &distance_matrix,
+							  Distance max_distance,
+							  size_t slice)
+:
+	_teamcount(distance_matrix.teamcount()),
+	_round_teams(_teamcount / 3),
+	// ToDo: review this
+	_max_distance(302500),
+	_candidates(_teamcount / 3)
+{
+	(void)max_distance;
+	BOOST_ASSERT(slice < _round_teams * 2);
+
+	_sort_filter_teams(distance_matrix, slice);
 
 	// Put back "missinng" (optimized out) teams
 
