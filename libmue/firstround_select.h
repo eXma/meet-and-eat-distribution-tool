@@ -15,7 +15,9 @@ namespace mue {
 	class Firstround_team_selection
 	{
 		private:
-			unsigned int _teamcount;
+			const unsigned int _teamcount;
+			const unsigned int _round_teams;
+			const Distance _max_distance;
 			std::vector<std::vector<Team_id> > _candidates;
 
 		public:

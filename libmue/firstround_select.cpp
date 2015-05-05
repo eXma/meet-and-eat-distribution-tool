@@ -32,10 +32,12 @@ mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const 
 							  size_t slice)
 :
 	_teamcount(distance_matrix.teamcount()),
+	_round_teams(_teamcount / 3),
+	// ToDo: review this
+	_max_distance(302500),
 	_candidates(_teamcount / 3)
 {
-	max_distance = 302500;
-	unsigned int _round_teams = _teamcount / 3;
+	(void)max_distance;
 	BOOST_ASSERT(slice < _round_teams * 2);
 
 	for (Team_id host_team = 0; host_team < _round_teams; ++host_team) {
@@ -48,7 +50,7 @@ mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const 
 		{
 			Distance firststep_distance = distance_matrix.lookup(host_team,
 									     firststep_guest);
-			if (firststep_distance > max_distance)
+			if (firststep_distance > _max_distance)
 				continue;
 
 			std::vector<Candidate> second_candidates;
@@ -59,7 +61,7 @@ mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const 
 			{
 				Distance secondstep_distance = distance_matrix.lookup(firststep_guest,
 										      secondstep_guest);
-				if (secondstep_distance > max_distance)
+				if (secondstep_distance > _max_distance)
 					continue;
 
 				second_candidates.emplace_back(firststep_distance + secondstep_distance,
