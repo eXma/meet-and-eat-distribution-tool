@@ -7,7 +7,6 @@
 #include "config.h"
 #include "guest_tuple_iterator.h"
 
-#include <iostream>
 class TestFirstroundTeamSelection : public CxxTest::TestSuite
 {
 	private:
@@ -90,10 +89,8 @@ class TestFirstroundTeamSelection : public CxxTest::TestSuite
 							 guests(7, 11)};
 
 
-
 			auto it = reference.begin();
 			for (guests const &g : generator) {
-				std::cout << "guests(" << (int) g.first << ", "<< (int) g.second << ")"<<std::endl;
 				TS_ASSERT(it != reference.end());
 				TS_ASSERT_EQUALS(it->first, g.first);
 				TS_ASSERT_EQUALS(it->second, g.second);
