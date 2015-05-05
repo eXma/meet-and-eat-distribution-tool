@@ -13,13 +13,6 @@ RUN DEBIAN_FRONTEND=noninteractive DEBIAN_NONINTERACTIVE_SEEN=true && \
 		libboost-dev \
 		libtcmalloc-minimal4 \
 		libgoogle-perftools4 \
-	&& \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN DEBIAN_FRONTEND=noninteractive DEBIAN_NONINTERACTIVE_SEEN=true && \
-	apt-get update && \
-	apt-get -y install --no-install-recommends \
 		cxxtest \
 	&& \
 	apt-get clean && \
