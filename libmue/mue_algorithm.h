@@ -92,7 +92,7 @@ class Calculation
 
 			Iteration_data(Iteration_data const &other) = delete;
 			Iteration_data& operator=(Iteration_data const &) = delete;
-			Iteration_data(Iteration_data&& other) = default;
+			Iteration_data(Iteration_data&& other) = delete;
 
 			Iteration_data(Distance new_distance, Iteration_data const &other)
 			:
