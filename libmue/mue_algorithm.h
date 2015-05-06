@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <ios>
 
+#include <string.h>
 
 #include <boost/assert.hpp>
 
@@ -66,7 +67,7 @@ class Calculation
 		{
 			Distance                    distance;
 			Guest_tuple_generator::Used_bits used_guests;
-			std::vector<Team_id>        round_station;
+			Team_id	                    round_station[MAX_TEAMS];
 			Seen_table                  seen_table;
 
 			void set_station(Team_id host, Team_id guest1, Team_id guest2)
@@ -85,7 +86,6 @@ class Calculation
 			:
 				distance(0),
 				used_guests(),
-				round_station(teamcount),
 				seen_table(teamcount)
 			{ }
 
@@ -98,9 +98,10 @@ class Calculation
 			:
 				distance(new_distance),
 				used_guests(other.used_guests),
-				round_station(other.round_station),
 				seen_table(other.seen_table.clone())
-			{}
+			{
+				memcpy(round_station, other.round_station, sizeof(*round_station) * MAX_TEAMS);
+			}
 
 			bool seen(Team_id host, Team_id guestA, Team_id guestB) const
 			{
@@ -119,6 +120,16 @@ class Calculation
 				Iteration_data new_data(new_distance, *this);
 				new_data.set_station(host, guests.first, guests.second);
 				return new_data;
+			}
+
+			std::vector<Team_id>& report_stations(std::vector<Team_id>& dest,
+							      const Team_id teamcount) const
+			{
+				dest.clear();
+				for (Team_id team = 0; team < teamcount; ++team) {
+					dest.push_back(round_station[team]);
+				}
+				return dest;
 			}
 		};
 
