@@ -113,15 +113,6 @@ class Calculation
 				used_guests.reset();
 			}
 
-			Iteration_data next_iteration(Distance new_distance,
-						      Team_id host,
-						      Guest_tuple_generator::GuestPair const &guests)
-			{
-				Iteration_data new_data(new_distance, *this);
-				new_data.set_station(host, guests.first, guests.second);
-				return new_data;
-			}
-
 			std::vector<Team_id>& report_stations(std::vector<Team_id>& dest,
 							      const Team_id teamcount) const
 			{

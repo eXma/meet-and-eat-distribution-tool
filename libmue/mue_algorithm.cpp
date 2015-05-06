@@ -176,8 +176,8 @@ void mue::Calculation::run_firstround_distribution(Round_data const &round_data,
 	Guest_tuple_generator generator(_firstround_selection.for_host(host),
 			                iteration.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
-		Iteration_data new_iteration(iteration.next_iteration((0),
-					     host, guests));
+		Iteration_data new_iteration(0, iteration);
+		new_iteration.set_station(host, guests.first, guests.second);
 		run_firstround_distribution(round_data, new_iteration, host_index + 1);
 	}
 }
@@ -201,8 +201,8 @@ void mue::Calculation::run_distribution(Round_data const &round_data,
 	size_t slices = _teams_per_round / 3;
 
 	for (Guest_candidate const &candidate : determine_guest_candidates(round_data, iteration, host, host_index, slices)) {
-		Iteration_data new_iteration(iteration.next_iteration((candidate.distance),
-					     host, candidate.guests));
+		Iteration_data new_iteration(candidate.distance, iteration);
+		new_iteration.set_station(host, candidate.guests.first, candidate.guests.second);
 		run_distribution(round_data, new_iteration, host_index + 1);
 	}
 }
