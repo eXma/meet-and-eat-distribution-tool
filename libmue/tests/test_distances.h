@@ -64,8 +64,8 @@ class TestDistances : public CxxTest::TestSuite
 
 			unsigned hosts = MAX_TEAMS / 3;
 			for (unsigned i = 0; i < hosts; ++i) {
-				TS_ASSERT_EQUALS(forecast.second_move(i), hosts - i - 1);
-				TS_ASSERT_EQUALS(forecast.first_move(i), 2 * hosts - i - 1);
+				TS_ASSERT_EQUALS(forecast.second_move(i), (hosts - i - 1) * 3);
+				TS_ASSERT_EQUALS(forecast.first_move(i), (2 * hosts - i - 1) * 3);
 			}
 		}
 

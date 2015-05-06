@@ -29,7 +29,7 @@ void mue::Distance_matrix::set_cost(Team_id const source, Team_id const destinat
 		_min_cost = cost;
 }
 
-
+// Get "best" distances in the distance table in descending order
 std::vector<mue::Distance>
 mue::Distance_forecast::_min_costs(Distance_matrix const &distances, unsigned hostcount,
 		                   unsigned multiply)
@@ -38,7 +38,7 @@ mue::Distance_forecast::_min_costs(Distance_matrix const &distances, unsigned ho
 	for (unsigned src_index = 0; src_index < hostcount; ++src_index) {
 		for (unsigned dst_index = 0; dst_index < hostcount; ++dst_index) {
 			first_tmp.push_back(distances.lookup(src_index + multiply * hostcount,
-							     dst_index + (multiply + 1) * hostcount));
+							     dst_index + (multiply + 1) * hostcount) * 3);
 		}
 	}
 
