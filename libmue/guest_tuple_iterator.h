@@ -11,10 +11,10 @@
 #include <bitset>
 
 #include "config.h"
+#include "team_container.h"
 
 
 namespace mue {
-
 
 class Guest_tuple_generator
 {
@@ -24,9 +24,9 @@ class Guest_tuple_generator
 		typedef std::unordered_set<Team_id> Used_set;
 
 	private:
-		typedef std::vector<Team_id>::const_iterator  Team_iterator;
+		typedef Guests::const_iterator  Team_iterator;
 
-		std::vector<Team_id> _possible_guests;
+		Guests _possible_guests;
 		Team_iterator _guest_end;
 
 	public:
@@ -98,6 +98,7 @@ class Guest_tuple_generator
 
 		Guest_tuple_generator(std::vector<Team_id> const& guests, Used_set  const& used);
 		Guest_tuple_generator(std::vector<Team_id> const& guests, Used_bits const& used);
+		Guest_tuple_generator(Guests const& guests, Used_bits const& used);
 
 		iterator begin() const { return Iterator(_possible_guests.begin(), _guest_end); }
 
