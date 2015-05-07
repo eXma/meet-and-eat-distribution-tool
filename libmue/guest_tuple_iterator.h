@@ -53,8 +53,8 @@ class Guest_tuple_generator
 
 				inline Iterator& operator++()
 				{
-					assert(_guest_a != _end);
-					assert(_guest_b != _end);
+					BOOST_ASSERT(_guest_a != _end);
+					BOOST_ASSERT(_guest_b != _end);
 
 					++_guest_b;
 					if (_guest_b == _end) {
