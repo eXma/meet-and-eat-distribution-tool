@@ -24,12 +24,16 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	BOOST_ASSERT(_teamcount / 3 == float(_teamcount / 3));
 
 	for (unsigned int round = 0; round < 3; ++round) {
+		std::vector<Team_id> round_hosts;
+		std::vector<Team_id> round_guests;
 		for (Team_id team = 0; team < teamcount; ++team) {
 			if (_is_round_host(team, static_cast<Round>(round)))
-				_round_hosts[round].push_back(team);
+				round_hosts.push_back(team);
 			else
-				_round_guests[round].push_back(team);
+				round_guests.push_back(team);
 		}
+		_round_hosts[round] = Hosts(round_hosts);
+		_round_guests[round] = Guests(round_guests);
 	}
 
 }
@@ -88,7 +92,7 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 mue::Calculation::Round_data mue::Calculation::initial_round_data() const
 {
 	return Round_data(FIRST, _round_hosts[FIRST], _round_guests[FIRST],
-			  std::vector<std::vector<Team_id> >());
+			  Stations(3));
 }
 
 
@@ -97,20 +101,20 @@ mue::Calculation::Round_data mue::Calculation::next_round_data(Round_data const 
 {
 	BOOST_ASSERT(old.round < 2);
 	Round next_round = static_cast<Round>(old.round + 1);
-	std::vector<std::vector<Team_id> > station_backlog(old.prev_stations);
-	std::vector<Team_id> new_stations(_teamcount);
-	station_backlog.push_back(iteration.report_stations(new_stations, _teamcount));
+	Stations station_backlog(old.prev_stations);
+	station_backlog[old.round] = iteration.round_station;
 	return Round_data(next_round, _round_hosts[next_round], _round_guests[next_round], station_backlog);
 }
 
 
 std::vector<mue::Team_id> mue::Calculation::round_stations(Round round) const
 {
-	return _best_stations[round];
+	Teams const &round_teams(_best_stations[round]);
+	return std::vector<Team_id>(round_teams.begin(), round_teams.end());
 }
 
 
-void mue::Calculation::print_stations(std::vector<std::vector<Team_id> > const &stations)
+void mue::Calculation::print_stations(Stations const &stations)
 {
 	std::cout << "[";
 	bool list_first(true);
@@ -151,8 +155,8 @@ void mue::Calculation::report_success(Round_data const &round_data, Iteration_da
 	_best_distance = iteration.distance;
 	std::cout << "new best (" << _solutions << ") " << std::fixed << _best_distance << "  ";
 	for (uint8_t round = 0; round < 3; ++round) {
-		if (round == round_data.prev_stations.size())
-			iteration.report_stations(_best_stations[round], _teamcount);
+		if (round == round_data.round)
+			_best_stations[round] = iteration.round_station;
 		else
 			_best_stations[round] = round_data.prev_stations[round];
 	}
@@ -224,7 +228,11 @@ void mue::Calculation::run_new_round(Round_data const &round_data, Iteration_dat
 
 void mue::Calculation::calculate_distribution()
 {
-	Round_data round_data(initial_round_data());
+	Round_data round_data(FIRST,
+			      _round_hosts[FIRST],
+			      _round_guests[FIRST],
+			      Stations(3));
+
 	Iteration_data iteration_data(_teamcount);
 
 	run_firstround_distribution(round_data, iteration_data, 0);

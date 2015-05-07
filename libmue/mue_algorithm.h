@@ -16,6 +16,7 @@
 #include "config.h"
 #include "seen_table.h"
 #include "firstround_select.h"
+#include "team_container.h"
 
 
 namespace mue {
@@ -31,24 +32,27 @@ class Calculation
 			THIRD = 2
 		};
 
+		using Stations = Limited_array<Teams, 3>;
 
 		struct Round_data
 		{
-			Calculation::Round   const round;
-			std::vector<Team_id> const hosts;
-			std::vector<Team_id> const guests;
 
-			std::vector<std::vector<Team_id> > const prev_stations;
+			Calculation::Round const round;
+			Hosts              const hosts;
+			Guests             const guests;
+
+			Stations           const prev_stations;
 
 			bool first_round() const { return round == Calculation::FIRST; }
 			Team_id prev_host(Team_id team) const {
-				return prev_stations.back()[team];
+				BOOST_ASSERT( round != 0 );
+				return prev_stations[round - 1][team];
 			}
 
 			Round_data(Calculation::Round round,
-				   std::vector<Team_id> const &hosts,
-				   std::vector<Team_id> const &guests,
-				   std::vector<std::vector<Team_id> > const &prev_stations)
+				   Hosts const &hosts,
+				   Guests const &guests,
+				   Stations const &prev_stations)
 			:
 				round(round),
 				hosts(hosts),
@@ -67,7 +71,7 @@ class Calculation
 		{
 			Distance                    distance;
 			Guest_tuple_generator::Used_bits used_guests;
-			Team_id	                    round_station[MAX_TEAMS];
+			Teams                       round_station;
 			Seen_table                  seen_table;
 
 			void set_station(Team_id host, Team_id guest1, Team_id guest2)
@@ -86,6 +90,7 @@ class Calculation
 			:
 				distance(0),
 				used_guests(),
+				round_station(teamcount),
 				seen_table(teamcount)
 			{ }
 
@@ -98,10 +103,9 @@ class Calculation
 			:
 				distance(new_distance),
 				used_guests(other.used_guests),
+				round_station(other.round_station),
 				seen_table(other.seen_table.clone())
-			{
-				memcpy(round_station, other.round_station, sizeof(*round_station) * MAX_TEAMS);
-			}
+			{ }
 
 			bool seen(Team_id host, Team_id guestA, Team_id guestB) const
 			{
@@ -139,13 +143,13 @@ class Calculation
 
 		size_t                              const _teamcount;
 		size_t                              const _teams_per_round;
-		std::vector<std::vector<Team_id> >        _round_hosts;
-		std::vector<std::vector<Team_id> >        _round_guests;
+		std::vector<Hosts>                        _round_hosts;
+		std::vector<Guests>                       _round_guests;
 		Distance_matrix                     const _distance_matrix;
 		Distance                                  _best_distance;
 		Distance                            const _max_single_distance;
 		Distance_forecast                   const _forecast;
-		std::vector<std::vector<Team_id> >        _best_stations;
+		Stations			          _best_stations;
 		size_t                                    _solutions;
 		Firstround_team_selection           const _firstround_selection;
 
@@ -162,7 +166,7 @@ class Calculation
 		void run_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
 		void run_firstround_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
 		void report_success(Round_data const &round_data, Iteration_data const &iteration);
-		void print_stations(std::vector<std::vector<Team_id> > const &stations);
+		void print_stations(Stations const &stations);
 
 		std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data,
 									Iteration_data const &iteration_data,
