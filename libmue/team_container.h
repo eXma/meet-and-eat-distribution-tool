@@ -33,10 +33,20 @@ class Limited_array
 			_array(other._array)
 		{ }
 
+		Limited_array(std::size_t len, const _Value_type &template_value)
+		:
+			_len(len)
+		{
+			for (std::size_t idx = 0; idx < _len; ++idx)
+				_array[idx++] = template_value;
+		}
+
 		Limited_array(std::initializer_list<_Value_type> const &values)
 		:
 			_len(values.size())
 		{
+			BOOST_ASSERT( _len <= NUM );
+
 			std::size_t idx(0);
 			for (const _Value_type& value : values)
 				_array[idx++] = value;

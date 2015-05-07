@@ -9,7 +9,7 @@
 
 mue::Distance_matrix::Distance_matrix(int teamcount) noexcept
 :
-	_table(teamcount, std::vector<Distance>(teamcount, 0)),
+	_table(teamcount, _Row(teamcount, 0)),
 	_teamcount(teamcount),
 	_min_cost(std::numeric_limits<Distance>::max())
 {

@@ -7,6 +7,7 @@
 
 
 #include <teams.h>
+#include <team_container.h>
 
 
 namespace mue {
@@ -17,7 +18,10 @@ namespace mue {
 	class Distance_matrix
 	{
 		private:
-			std::vector<std::vector<Distance> > _table;
+			using _Row = Limited_array<Distance, MAX_TEAMS>;
+			using _Table = Limited_array<_Row, MAX_TEAMS>;
+
+			_Table _table;
 			unsigned int _teamcount;
 			Distance     _min_cost;
 
@@ -40,9 +44,11 @@ namespace mue {
 	class Distance_forecast
 	{
 		private:
+			using _Costs = Limited_array<Distance, MAX_TEAMS>;
+
 			unsigned _hostcount;
-			std::vector<Distance> _second_costs;
-			std::vector<Distance> _first_costs;
+			_Costs _second_costs;
+			_Costs _first_costs;
 
 
 			static std::vector<Distance>
