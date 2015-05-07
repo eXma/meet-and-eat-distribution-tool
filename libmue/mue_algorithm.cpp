@@ -61,11 +61,12 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 	BOOST_ASSERT(! round_data.first_round());
 	std::vector<Guest_candidate> candidates;
 	/*
-	 * 63 teams have 42 guests (2/3)
-	 * (math.factorial(42) / math.factorial(42-2)) / 2 = 861
-	 * So for guests of 63 Teams 900 elements are enough.
+	 * 30 teams have 20 guests (2/3)
+	 * (math.factorial(20) / math.factorial(20-2)) / 2 = 190
+	 * So for guests of 30 Teams 200 elements are enough.
 	 */
-	candidates.reserve(900);
+	candidates.reserve(200);
+
 	Guest_tuple_generator generator(round_data.guests, iteration_data.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
 		if (! iteration_data.seen(current_host, guests.first, guests.second)) {
