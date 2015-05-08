@@ -72,12 +72,14 @@ class Limited_array
 		const_iterator end() const noexcept { return _array.begin() + _len; }
 		iterator end() noexcept { return _array.begin() + _len; }
 
-		const value_type& operator[](std::size_t elem) const noexcept
+		value_type& operator[](std::size_t elem) noexcept
 		{
 			BOOST_ASSERT( elem < _len );
 			return _array[elem];
 		}
-		value_type& operator[](std::size_t elem) noexcept
+
+		constexpr
+		const value_type& operator[](std::size_t elem) const noexcept
 		{
 			BOOST_ASSERT( elem < _len );
 			return _array[elem];
