@@ -8,6 +8,7 @@
 
 #include "teams.h"
 #include "distances.h"
+#include "team_container.h"
 
 
 namespace mue {
@@ -18,7 +19,7 @@ namespace mue {
 			const unsigned int _teamcount;
 			const unsigned int _round_teams;
 			const Distance _max_distance;
-			std::vector<std::vector<Team_id> > _candidates;
+			Limited_array<std::vector<Team_id>, MAX_TEAMS / 3> _candidates;
 
 			void _sort_filter_teams(Distance_matrix const &distance_matrix,
 						size_t slice);
@@ -28,7 +29,7 @@ namespace mue {
 						  Distance max_distance,
 					          size_t slice = 0);
 
-			std::vector<Team_id> for_host(Team_id const &host) const
+			const std::vector<Team_id>& for_host(Team_id const &host) const
 			{
 				BOOST_ASSERT(host < _teamcount / 3);
 				return _candidates[host];
