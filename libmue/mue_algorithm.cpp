@@ -18,7 +18,8 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	_forecast(distance_matrix),
 	_best_stations(3),
 	_solutions(0),
-	_firstround_selection(distance_matrix, _max_single_distance, _teams_per_round * 2 -2 )
+	_firstround_selection(distance_matrix, _max_single_distance, _teams_per_round * 2 -2 ),
+	_candidate_pool()
 {
 	BOOST_ASSERT(_teamcount <= MAX_TEAMS);
 	BOOST_ASSERT(_teamcount / 3 == float(_teamcount / 3));
@@ -34,6 +35,18 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 		}
 		_round_hosts[round] = Hosts(round_hosts);
 		_round_guests[round] = Guests(round_guests);
+	}
+
+	Guest_candidate_allocator alloc(200 * _teamcount);
+	/*
+	 * 63 teams have 42 guests (2/3)
+	 * (math.factorial(42) / math.factorial(42-2)) / 2 = 861
+	 * So for guests of 63 Teams 900 elements are enough.
+	 */
+	_candidate_pool.reserve(_teamcount);
+	for(unsigned int i = 0; i < _teamcount; i++) {
+		_candidate_pool.emplace_back(alloc);
+		_candidate_pool[i].reserve(200);
 	}
 
 }
@@ -56,16 +69,12 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 					     Iteration_data const &iteration_data,
 					     Team_id               current_host,
 					     size_t         const &host_idx,
-					     size_t                slice) const
+					     size_t                slice)
 {
 	BOOST_ASSERT(! round_data.first_round());
-	std::vector<Guest_candidate> candidates;
-	/*
-	 * 30 teams have 20 guests (2/3)
-	 * (math.factorial(20) / math.factorial(20-2)) / 2 = 190
-	 * So for guests of 30 Teams 200 elements are enough.
-	 */
-	candidates.reserve(200);
+
+	Guest_candidate_vec &candidates(_candidate_pool[host_idx + (_teams_per_round * round_data.round)]);
+	candidates.clear();
 
 	Guest_tuple_generator generator(round_data.guests, iteration_data.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
@@ -164,6 +173,8 @@ void mue::Calculation::report_success(Round_data const &round_data, Iteration_da
 	print_stations(_best_stations);
 	std::cout << std::endl;
 	std::cout.flush();
+	if (_solutions == 20)
+		exit(0);
 }
 
 
@@ -189,7 +200,8 @@ void mue::Calculation::run_firstround_distribution(Round_data const &round_data,
 
 
 void mue::Calculation::run_distribution(Round_data const &round_data,
-					Iteration_data &iteration, size_t host_index)
+					Iteration_data &iteration,
+					size_t host_index)
 {
 	BOOST_ASSERT(! round_data.first_round());
 	if (host_index == _teams_per_round) {

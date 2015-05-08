@@ -140,6 +140,58 @@ class Calculation
 		};
 
 
+		template<typename Tp>
+		class Simple_block_allocator
+		{
+			public:
+			typedef Tp value_type;
+
+			private:
+			const std::size_t _elements;
+			std::shared_ptr<std::size_t> _offset;
+			std::shared_ptr<value_type> _memory;
+
+			public:
+			Simple_block_allocator(Simple_block_allocator const &other)
+			:
+				_elements(other._elements),
+				_offset(other._offset),
+				_memory(other._memory)
+			{ }
+
+			Simple_block_allocator()
+			:
+				_elements(0),
+				_offset(new std::size_t(0)),
+				_memory(0)
+			{ }
+
+			Simple_block_allocator(std::size_t elements)
+			:
+				_elements(elements),
+				_offset(new std::size_t(0)),
+				_memory(static_cast<value_type*>(::operator new(sizeof(value_type) * _elements)))
+			{ }
+
+
+			value_type* allocate(std::size_t n)
+			{
+				BOOST_ASSERT(*_offset + n <= _elements);
+
+				value_type* ptr(static_cast<value_type*>(_memory.get() + *_offset));
+				*_offset += n;
+				return ptr;
+			}
+
+			void deallocate(value_type* , std::size_t ) { }
+
+			bool operator==(Simple_block_allocator const &other) { return _memory == other._memory; }
+		};
+		using Guest_candidate_allocator = Simple_block_allocator<Guest_candidate>;
+		using Guest_candidate_vec = std::vector<Guest_candidate, Guest_candidate_allocator>;
+		using Guest_candidate_pool = std::vector<Guest_candidate_vec>;
+
+
 
 		size_t                              const _teamcount;
 		size_t                              const _teams_per_round;
@@ -152,7 +204,7 @@ class Calculation
 		Stations			          _best_stations;
 		size_t                                    _solutions;
 		Firstround_team_selection           const _firstround_selection;
-
+		Guest_candidate_pool                      _candidate_pool;
 
 		bool _is_round_host(Team_id team, Round round) const
 		{
@@ -163,7 +215,11 @@ class Calculation
 
 		bool _distance_is_better(Distance new_dist) const  { return _best_distance > new_dist; }
 		void run_new_round(Round_data const &round_data, Iteration_data &iteration);
-		void run_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
+
+		void run_distribution(Round_data const &round_data,
+				      Iteration_data &iteration,
+				      size_t host_index);
+
 		void run_firstround_distribution(Round_data const &round_data, Iteration_data &iteration, size_t host_index);
 		void report_success(Round_data const &round_data, Iteration_data const &iteration);
 		void print_stations(Stations const &stations);
@@ -172,7 +228,7 @@ class Calculation
 									Iteration_data const &iteration_data,
 									Team_id current_host,
 									size_t const &host_idx,
-									size_t slice) const;
+									size_t slice);
 
 		void update_best(float best) { _best_distance = best; }
 
