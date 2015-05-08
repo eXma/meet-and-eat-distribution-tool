@@ -64,7 +64,7 @@ mue::Distance mue::Calculation::host_distance(Round_data const &round_data, Team
 	return _distance_matrix.lookup(round_data.prev_host(host), host);
 }
 
-std::vector<mue::Calculation::Guest_candidate>
+mue::Calculation::Guest_candidate_vec&
 mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 					     Iteration_data const &iteration_data,
 					     Team_id               current_host,
@@ -93,9 +93,8 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 	std::sort(candidates.begin(), candidates.end(),
 			[](Guest_candidate const &a, Guest_candidate const &b)
 				{ return a.distance < b.distance; });
-	return std::vector<Guest_candidate>(candidates.begin(),
-					    candidates.begin()
-					    + std::min(candidates.size(), slice));
+	candidates.erase(candidates.begin() + std::min(candidates.size(), slice), candidates.end());
+	return candidates;
 }
 
 
@@ -173,8 +172,6 @@ void mue::Calculation::report_success(Round_data const &round_data, Iteration_da
 	print_stations(_best_stations);
 	std::cout << std::endl;
 	std::cout.flush();
-	if (_solutions == 20)
-		exit(0);
 }
 
 

@@ -224,11 +224,12 @@ class Calculation
 		void report_success(Round_data const &round_data, Iteration_data const &iteration);
 		void print_stations(Stations const &stations);
 
-		std::vector<Guest_candidate> determine_guest_candidates(Round_data const &round_data,
-									Iteration_data const &iteration_data,
-									Team_id current_host,
-									size_t const &host_idx,
-									size_t slice);
+		Guest_candidate_vec&
+		determine_guest_candidates(Round_data const &round_data,
+					   Iteration_data const &iteration_data,
+					   Team_id current_host,
+					   size_t const &host_idx,
+					   size_t slice);
 
 		void update_best(float best) { _best_distance = best; }
 
