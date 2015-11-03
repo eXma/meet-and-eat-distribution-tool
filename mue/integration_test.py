@@ -4,7 +4,7 @@ import sys
 import pymue
 from collections import defaultdict
 
-MAX_WAY = 7.8
+MAX_WAY = 9.3
 
 
 def way_cost(way_length):
