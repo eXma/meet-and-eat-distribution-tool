@@ -110,7 +110,7 @@ mue::Firstround_team_selection::Firstround_team_selection(Distance_matrix const 
 	_teamcount(distance_matrix.teamcount()),
 	_round_teams(_teamcount / 3),
 	// ToDo: review this
-	_max_distance(302500),
+	_max_distance(602500),
 	_candidates(_teamcount / 3)
 {
 	(void)max_distance;
