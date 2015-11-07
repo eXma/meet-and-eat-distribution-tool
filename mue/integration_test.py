@@ -30,9 +30,9 @@ with open("distances%s.json" % pref, "r") as f:
 print("map teams....")
 team_map = dict()
 team_map_reverse = dict()
-for (idx, team) in enumerate(team_data):
-    team_map[team["id"]] = idx
-    team_map_reverse[idx] = team["id"]
+for team in team_data:
+    team_map[team["id"]] = team["idx"]
+    team_map_reverse[team["idx"] = team["id"]
 
 cnt = len(team_data)
 teams = sorted(team_map.values())
