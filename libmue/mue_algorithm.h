@@ -231,7 +231,7 @@ class Calculation
 					   size_t const &host_idx,
 					   size_t slice);
 
-		void update_best(float best) { _best_distance = best; }
+		void update_best(Distance best) { _best_distance = best; }
 
 		Round_data initial_round_data() const;
 
