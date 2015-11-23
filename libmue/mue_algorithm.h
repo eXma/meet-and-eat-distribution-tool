@@ -252,14 +252,14 @@ class Calculation
 	public:
 		Calculation(unsigned int teamcount,
 			    Distance_matrix const &distance_matrix,
-			    Distance max_single_distance);
+			    Distance max_single_distance)  __attribute__((visibility("default"))) ;
 
 		unsigned int teamcount() { return _teamcount; }
 		unsigned int solutions() { return _solutions; }
 
-		std::vector<Team_id> round_stations(Round round) const;
+		std::vector<Team_id> round_stations(Round round) const __attribute__((visibility("default"))) ;
 
-		void calculate_distribution();
+		void calculate_distribution() __attribute__((visibility("default"))) ;
 
 };
 
