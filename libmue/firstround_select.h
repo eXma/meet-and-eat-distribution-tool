@@ -27,7 +27,7 @@ namespace mue {
 		public:
 			Firstround_team_selection(Distance_matrix const &distance_matrix,
 						  Distance max_distance,
-					          size_t slice = 0);
+					          size_t slice = 0) __attribute__((visibility("default"))) ;
 
 			const std::vector<Team_id>& for_host(Team_id const &host) const
 			{

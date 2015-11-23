@@ -15,10 +15,9 @@ void mue::Seen_table::add_meeting(Team_id id_1, Team_id id_2, Team_id id_3) noex
 mue::Seen_table::Seen_table(Seen_table const &old, int new_generation) noexcept
 :
 	_generation(new_generation),
-	_max_teams(old._max_teams)
-{
-	memcpy(_table, old._table, sizeof(*_table) * MAX_TEAMS);
-}
+	_max_teams(old._max_teams),
+	_table(old._table)
+{ }
 
 
 mue::Seen_table::Seen_table(Seen_table&& other) noexcept

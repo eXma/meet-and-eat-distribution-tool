@@ -13,7 +13,7 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	_round_hosts(3),
 	_round_guests(3),
 	_distance_matrix(distance_matrix),
-	_best_distance(std::numeric_limits<float>::max()),
+	_best_distance(std::numeric_limits<Distance>::max()),
 	_max_single_distance(max_single_distance),
 	_forecast(distance_matrix),
 	_best_stations(3),
@@ -22,7 +22,7 @@ mue::Calculation::Calculation(unsigned int           teamcount,
 	_candidate_pool()
 {
 	BOOST_ASSERT(_teamcount <= MAX_TEAMS);
-	BOOST_ASSERT(_teamcount / 3 == float(_teamcount / 3));
+	BOOST_ASSERT(_teamcount / 3 == Distance(_teamcount / 3));
 
 	for (unsigned int round = 0; round < 3; ++round) {
 		std::vector<Team_id> round_hosts;
@@ -79,9 +79,9 @@ mue::Calculation::determine_guest_candidates(Round_data     const &round_data,
 	Guest_tuple_generator generator(round_data.guests, iteration_data.used_guests);
 	for (Guest_tuple_generator::GuestPair const &guests : generator) {
 		if (! iteration_data.seen(current_host, guests.first, guests.second)) {
-			float single_distance =
+			Distance single_distance =
 				guest_distance(round_data, current_host, guests);
-			float distance = single_distance + iteration_data.distance;
+			Distance distance = single_distance + iteration_data.distance;
 
 			if (single_distance < _max_single_distance
 			   &&  _distance_is_better(distance + (round_data.round == SECOND

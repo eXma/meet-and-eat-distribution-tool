@@ -26,9 +26,9 @@ namespace mue {
 			Distance     _min_cost;
 
 		public:
-			Distance_matrix(int teamcount) noexcept;
+			Distance_matrix(int teamcount) noexcept __attribute__((visibility("default"))) ;
 
-			void set_cost(Team_id const source, Team_id const destination, Distance cost);
+			void set_cost(Team_id const source, Team_id const destination, Distance cost) __attribute__((visibility("default"))) ;
 
 			Distance lookup(Team_id const source, Team_id const destination) const noexcept
 			{
