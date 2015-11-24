@@ -7,6 +7,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb3") # implicit: -g
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -mtune=native -fvisibility=hidden") # implicit: -DNDEBUG -O3 
 
+option(PROFILING "PROFILING" OFF)
+
+
+# Use this for PERF
+if (PROFILING)
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ggdb3 -fno-omit-frame-pointer")
+endif()
+
 # find python
 set(CMAKE_PYTHON_VERSIONS 3.4)
 set(Python_ADDITIONAL_VERSIONS 3.4)
