@@ -104,7 +104,7 @@ class Calculation
 				distance(new_distance),
 				used_guests(other.used_guests),
 				round_station(other.round_station),
-				seen_table(other.seen_table.clone())
+				seen_table(other.seen_table)
 			{ }
 
 			bool seen(Team_id host, Team_id guestA, Team_id guestB) const
