@@ -13,7 +13,7 @@ class Seen_table
 {
 
 	private:
-		typedef std::bitset<MAX_TEAMS> Seen_bitset;
+		typedef uint32_t Seen_bitset;
 
 		static std::vector<Seen_bitset> _id_bitsets;
 
@@ -22,7 +22,6 @@ class Seen_table
 
 		Seen_bitset _table[MAX_TEAMS];
 
-		Seen_table(Seen_table const &old, int new_generation) noexcept;
 
 		inline void _update_table(Team_id table_idx, Team_id team_a, Team_id team_b) noexcept
 		{
@@ -31,21 +30,18 @@ class Seen_table
 
 	public:
 
-		Seen_table( const Seen_table& ) = delete;
+		Seen_table( const Seen_table& ) noexcept;
 		Seen_table& operator=( const Seen_table& ) = delete;
 		Seen_table& operator=( const Seen_table&& ) = delete;
 
-
-		Seen_table(Seen_table&& other) noexcept;
 		int generation() const noexcept { return _generation; }
 
 
-		Seen_table clone() const noexcept { return Seen_table(*this, _generation + 1); }
 
 		bool seen(Team_id id_1, Team_id id_2, Team_id id_3) const noexcept
 		{
-			return (_table[id_1] & (_id_bitsets[id_2] | _id_bitsets[id_3])).any()
-				|| (_table[id_2] & _id_bitsets[id_3]).any();
+			return (_table[id_1] & (_id_bitsets[id_2] | _id_bitsets[id_3]))
+				|| (_table[id_2] & _id_bitsets[id_3]);
 		}
 
 		void add_meeting(Team_id id_1, Team_id id_2, Team_id id_3) noexcept;

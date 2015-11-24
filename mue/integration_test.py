@@ -32,7 +32,7 @@ team_map = dict()
 team_map_reverse = dict()
 for team in team_data:
     team_map[team["id"]] = team["idx"]
-    team_map_reverse[team["idx"] = team["id"]
+    team_map_reverse[team["idx"]] = team["id"]
 
 cnt = len(team_data)
 teams = sorted(team_map.values())

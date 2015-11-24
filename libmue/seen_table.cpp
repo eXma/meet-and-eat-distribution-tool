@@ -12,20 +12,13 @@ void mue::Seen_table::add_meeting(Team_id id_1, Team_id id_2, Team_id id_3) noex
 }
 
 
-mue::Seen_table::Seen_table(Seen_table const &old, int new_generation) noexcept
+mue::Seen_table::Seen_table(Seen_table const &old) noexcept
 :
-	_generation(new_generation),
-	_max_teams(old._max_teams),
-	_table(old._table)
-{ }
-
-
-mue::Seen_table::Seen_table(Seen_table&& other) noexcept
-:
-	_generation(std::move(other._generation)),
-	_max_teams(std::move(other._max_teams)),
-	_table(std::move(other._table))
-{ }
+	_generation(old._generation + 1),
+	_max_teams(old._max_teams)
+{
+	::memcpy(_table, old._table, sizeof(_table));
+}
 
 
 mue::Seen_table::Seen_table(int max_teams) noexcept
@@ -36,12 +29,12 @@ mue::Seen_table::Seen_table(int max_teams) noexcept
 	BOOST_ASSERT(max_teams <= MAX_TEAMS);
 
 	for (int i = 0; i < max_teams; ++i) {
-		_table[i].reset();
+		_table[i] = 0;
 	}
 
 	if (_id_bitsets.empty()) {
 		for (int i = 0; i < MAX_TEAMS; ++i) {
-			_id_bitsets.push_back(0x01LL << i);
+			_id_bitsets.push_back(0x01 << i);
 		}
 	}
 }
