@@ -5,14 +5,28 @@ import pymue
 from collections import defaultdict
 
 MAX_WAY = 9.3
+SHORT_WAY = 1
+MODERATE_WAY = 4
 
+#N very short ways are still better than one long way
+N = 21
 
 def way_cost(way_length):
-    if way_length <= 1:
-        return way_length * 100
+    if way_length <= SHORT_WAY:
+        return (1-way_length) * 5
+    elif way_length < MODERATE_WAY:
+        return 0
     elif way_length < MAX_WAY:
-        return (way_length * 100) ** 2
+        return (way_length * 5 * N) ** 2
     return sys.float_info.max
+
+##Alternative cost function with different priority
+#def way_cost(way_length):
+    #if way_length <= 1:
+        #return way_length * 100
+    #elif way_length < MAX_WAY:
+        #return (way_length * 100) ** 2
+    #return sys.float_info.max
 
 
 print("read data....")
